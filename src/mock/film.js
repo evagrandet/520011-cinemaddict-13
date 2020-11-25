@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
-import {MINS_IN_HOUR, DESCRIPTION, ReleaseDates, Duration, DescriptionLength, CommentsCount, RatingLimits, AgeRatings} from '../const';
+import {ReleaseDates, Duration, DescriptionLength, CommentsCount, RatingLimits, AgeRatings} from '../const';
 import {getRandomInteger, generateItem, generateUniqItems} from '../util';
 import {generateComment} from './comment';
+
+export const MINS_IN_HOUR = 60;
+export const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
 
 const posterItems = [`made-for-each-other.png`, `popeye-meets-sinbad.png`, `sagebrush-trail.jpg`, `santa-claus-conquers-the-martians.jpg`, `the-dance-of-life.jpg`, `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
@@ -10,7 +13,7 @@ const directorItems = [`Alice Winocour`, `Amma Asante`, `Ana Lily Amirpour`, `An
 const writerItems = [`Maggie Gyllenhaal`, `Diablo Cody`, `Lucinda Coxon`, `Karen Croner`, `Philippa Boyens`, `Fran Walsh`, `Gillian Flynn`, `Abi Morgan`, `Nancy Oliver`, `Vanessa Taylor`, `Olivia Hetreed`];
 const actorItems = [`Meryl Streep`, `Katharine Hepburn`, `Ingrid Bergman`, `Bette Davis`, `Audrey Hepburn`, `Elizabeth Taylor`, `Judy Garland`, `Cate Blanchett`, `Grace Kelly`, `Sigourney Weaver`, `Nicole Kidman`, `Natalie Portman`];
 const genresItems = [`Action Adventure`, `Science fiction`, `Epics/ Historical`, `Animation`, `Fantasy`, `Drama`, `Romantic Comedy`, `Crime/ Gangster`, `Horror`, `Musicals/ Dance`];
-
+const countryItems = [`Austria`, `Belgium`, `USA`, `Ukraine`, `Estonia`, `Hungary`, `Vatican City`];
 
 export const generateFilm = () => {
   const poster = generateItem(posterItems);
@@ -21,6 +24,7 @@ export const generateFilm = () => {
   const writers = generateUniqItems(writerItems).join(`, `);
   const actors = generateUniqItems(actorItems).join(`, `);
   const genres = generateUniqItems(genresItems);
+  const country = generateItem(countryItems);
 
   const generateDuration = () => {
     const duration = getRandomInteger(Duration.MINIMUM, Duration.MAXIMUM);
@@ -62,6 +66,7 @@ export const generateFilm = () => {
     releaseDate,
     duration: generateDuration(),
     genres,
+    country,
     description: generateDescription(DESCRIPTION),
     isInWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),

@@ -1,11 +1,12 @@
 const createFiltersTemplate = (filters) => {
-  const result = [];
+  let template = ``;
   filters.forEach((filter) => {
     const {name, count} = filter;
-    result.push(`<a href="#${name}" class="main-navigation__item main-navigation__item">${name} <span class="main-navigation__item-count">${count}</span></a>`);
+    template += (`<a href="#${name}" class="main-navigation__item main-navigation__item">${name} <span class="main-navigation__item-count">${count}</span></a>`);
   });
-  return result.join(``);
+  return template;
 };
+
 export const createNavigationTemplate = (filters) => {
   const filtersTemplate = createFiltersTemplate(filters);
   return `<nav class="main-navigation">

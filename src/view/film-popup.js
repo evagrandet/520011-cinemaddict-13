@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {emojis} from '../const';
 dayjs.extend(relativeTime);
 
 const createCommentsTemplate = (comments) => {
-  const result = [];
+  let template = ``;
   comments.forEach((comment) => {
     const {author, date, emoji, text} = comment;
-    result.push(`
+    template += (`
       <li class="film-details__comment">
         <span class="film-details__comment-emoji">
           <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -22,22 +23,39 @@ const createCommentsTemplate = (comments) => {
       </li>
   `);
   });
-  return result.join(``);
+  return template;
 };
 
 const createGenresTemplate = (genres) => {
-  const result = [];
+  let template = ``;
+
   genres.forEach((genre) => {
-    result.push(`<span class="film-details__genre">${genre}</span>`);
+    template += `<span class="film-details__genre">${genre}</span>`;
   });
 
-  return result.join(``);
+  return template;
+};
+
+const createEmojiListInputsTemplate = () => {
+  let template = ``;
+
+  emojis.forEach((emoji) => {
+    template += (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+          <label class="film-details__emoji-label" for="emoji-${emoji}">
+          <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+        </label>
+      `);
+  });
+
+  return template;
 };
 
 export const createFilmPopupTemplate = (film) => {
-  const {poster, title, originTitle, director, writers, actors, rating, ageRating, releaseDate, duration, genres, description, comments} = film;
+  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, comments} = film;
   const commentsTemplate = createCommentsTemplate(comments);
   const genresTemplate = createGenresTemplate(genres);
+  const emojiListInputsTemplate = createEmojiListInputsTemplate();
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -86,10 +104,10 @@ export const createFilmPopupTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">USA</td>
+              <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">${ genres.length > 1 ? `Genres` : `Genre`}</td>
+              <td class="film-details__term">${genres.length > 1 ? `Genres` : `Genre`}</td>
               <td class="film-details__cell">
                 ${genresTemplate}
             </tr>
@@ -129,25 +147,7 @@ export const createFilmPopupTemplate = (film) => {
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-            <label class="film-details__emoji-label" for="emoji-puke">
-              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-            </label>
+          ${emojiListInputsTemplate}
           </div>
         </div>
       </section>

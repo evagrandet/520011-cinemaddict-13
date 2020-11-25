@@ -35,16 +35,23 @@ render(mainElement, createAllFilmsTemplate(), `beforeend`);
 const filmsList = mainElement.querySelector(`.films`);
 const filmsContainer = filmsList.querySelector(`.films-list__container`);
 
-for (let i = 0; i < Math.min(films.length, FILMS_COUNT_PER_STEP); i++) {
-  render(filmsContainer, createFilmCardTemplate(films[i]), `beforeend`);
-}
+const renderAllFilms = () => {
+  for (let i = 0; i < Math.min(films.length, FILMS_COUNT_PER_STEP); i++) {
+    render(filmsContainer, createFilmCardTemplate(films[i]), `beforeend`);
+  }
+};
+
+renderAllFilms();
+
 
 if (films.length > FILMS_COUNT_PER_STEP) {
   let renderedFilmsCount = FILMS_COUNT_PER_STEP;
+
   render(filmsContainer, createShowMoreButtonTemplate(), `afterend`);
+
   const loadMoreButton = filmsList.querySelector(`.films-list__show-more`);
 
-  loadMoreButton.addEventListener(`click`, (evt) => {
+  const onLoadMoreBtnClick = (evt) => {
     evt.preventDefault();
     films
       .slice(renderedFilmsCount, renderedFilmsCount + FILMS_COUNT_PER_STEP)
@@ -55,7 +62,9 @@ if (films.length > FILMS_COUNT_PER_STEP) {
     if (renderedFilmsCount >= films.length) {
       loadMoreButton.remove();
     }
-  });
+  };
+
+  loadMoreButton.addEventListener(`click`, onLoadMoreBtnClick);
 }
 
 render(filmsList, createRatedFilmsTemplate(), `beforeend`);
@@ -72,4 +81,4 @@ topFilmsSections.forEach((section) => {
 
 render(footerElement, createStatisticsTemplate(films.length), `beforeend`);
 
-// render(footerElement, createFilmPopupTemplate(films[0]), `afterend`);
+render(footerElement, createFilmPopupTemplate(films[0]), `afterend`);
