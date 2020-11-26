@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {emojis} from '../const';
+import {EMOJIS} from '../const';
+import {generateComment} from '../mock/comment';
 dayjs.extend(relativeTime);
 
-const createCommentsTemplate = (comments) => {
+const createCommentsTemplate = (commentIds) => {
+  const comments = new Array(commentIds.length).fill().map(generateComment);
   let template = ``;
   comments.forEach((comment) => {
     const {author, date, emoji, text} = comment;
@@ -26,6 +28,7 @@ const createCommentsTemplate = (comments) => {
   return template;
 };
 
+
 const createGenresTemplate = (genres) => {
   let template = ``;
 
@@ -39,7 +42,7 @@ const createGenresTemplate = (genres) => {
 const createEmojiListInputsTemplate = () => {
   let template = ``;
 
-  emojis.forEach((emoji) => {
+  EMOJIS.forEach((emoji) => {
     template += (
       `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
           <label class="film-details__emoji-label" for="emoji-${emoji}">
@@ -52,8 +55,8 @@ const createEmojiListInputsTemplate = () => {
 };
 
 export const createFilmPopupTemplate = (film) => {
-  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, comments} = film;
-  const commentsTemplate = createCommentsTemplate(comments);
+  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, commentIds} = film;
+  const commentsTemplate = createCommentsTemplate(commentIds);
   const genresTemplate = createGenresTemplate(genres);
   const emojiListInputsTemplate = createEmojiListInputsTemplate();
   return `<section class="film-details">
@@ -133,7 +136,7 @@ export const createFilmPopupTemplate = (film) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentIds.length}</span></h3>
 
         <ul class="film-details__comments-list">
         ${commentsTemplate}

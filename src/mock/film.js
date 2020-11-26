@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import {ReleaseDates, Duration, DescriptionLength, CommentsCount, RatingLimits, AgeRatings} from '../const';
 import {getRandomInteger, generateItem, generateUniqItems} from '../util';
-import {generateComment} from './comment';
 
 export const MINS_IN_HOUR = 60;
 export const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -41,10 +40,15 @@ export const generateFilm = () => {
     return textItems.slice(0, count).join(`.`);
   };
 
-  const generateComments = () => {
+  const generateCommentIds = () => {
     const commentsCount = getRandomInteger(CommentsCount.MIN, CommentsCount.MAX);
+    const commentIds = [];
+    for (let i = 0; i <= commentsCount; i++) {
+      const commentId = getRandomInteger(0, 100);
+      commentIds.push(commentId);
+    }
 
-    return new Array(commentsCount).fill().map(generateComment);
+    return Array.from(new Set(commentIds));
   };
 
   const generateRating = () => {
@@ -71,6 +75,6 @@ export const generateFilm = () => {
     isInWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    comments: generateComments()
+    commentIds: generateCommentIds(),
   };
 };

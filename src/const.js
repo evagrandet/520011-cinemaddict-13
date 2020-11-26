@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 
-export const emojis = [`angry`, `puke`, `sleeping`, `smile`];
+export const COMMENTS_COUNT = 30;
+
+export const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 
 export const PeriodComments = {
   START: dayjs(`2019-01-01`),
@@ -23,7 +25,7 @@ export const DescriptionLength = {
 
 export const CommentsCount = {
   MIN: 0,
-  MAX: 5
+  MAX: 4
 };
 
 export const RatingLimits = {

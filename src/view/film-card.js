@@ -1,7 +1,7 @@
 import {DescriptionSymbols} from '../const';
 
 export const createFilmCardTemplate = (film) => {
-  const {poster, title, rating, releaseDate, duration, genres, description, isInWatchlist, isWatched, isFavorite, comments} = film;
+  const {poster, title, rating, releaseDate, duration, genres, description, isInWatchlist, isWatched, isFavorite, commentIds} = film;
 
   const getControlClass = (property) => property ? `film-card__controls-item--active` : ``;
   return `<article class="film-card">
@@ -14,7 +14,7 @@ export const createFilmCardTemplate = (film) => {
           </p>
           <img src="./images/posters/${poster}" alt="" class="film-card__poster">
           <p class="film-card__description">${description.length > DescriptionSymbols.MAX ? `${description.substring(0, DescriptionSymbols.MAX_VISIBLE)}…` : `${description}.`}</p>
-          <a class="film-card__comments">${comments.length} comments</a>
+          <a class="film-card__comments">${commentIds.length} comments</a>
           <div class="film-card__controls">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${getControlClass(isInWatchlist)}" type="button">Add to watchlist</button>
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${getControlClass(isWatched)}" type="button">Mark as watched</button>
