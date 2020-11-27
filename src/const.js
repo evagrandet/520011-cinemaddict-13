@@ -1,7 +1,5 @@
 import dayjs from "dayjs";
 
-export const COMMENTS_COUNT = 30;
-
 export const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 
 export const PeriodComments = {

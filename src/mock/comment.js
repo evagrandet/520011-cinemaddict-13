@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
-import {PeriodComments, EMOJIS, COMMENTS_COUNT} from '../const';
+import {PeriodComments, EMOJIS} from '../const';
 import {getRandomInteger, generateItem} from '../util';
+
+const COMMENTS_COUNT = 30;
 
 const authors = [`Bella Hudson`, `Eva Wells`, `Keira Hayes`, `Libby Hughes`, `Imogen Thomson`, `Elisa Butler`, `Rebekah Travis`, `Presley Boone`, `Nahla Snider`, `Genesis Buckley`];
 const texts = [`good`, `must watch!`, `boring`, `watched 2 times`, `horrible!`];

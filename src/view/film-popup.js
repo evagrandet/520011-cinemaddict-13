@@ -4,12 +4,10 @@ import {EMOJIS} from '../const';
 import {generateComment} from '../mock/comment';
 dayjs.extend(relativeTime);
 
-const createCommentsTemplate = (commentIds) => {
-  const comments = new Array(commentIds.length).fill().map(generateComment);
-  let template = ``;
-  comments.forEach((comment) => {
-    const {author, date, emoji, text} = comment;
-    template += (`
+const createCommentTemplate = (comment) => {
+  const {author, date, emoji, text} = comment;
+
+  return `
       <li class="film-details__comment">
         <span class="film-details__comment-emoji">
           <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -23,35 +21,28 @@ const createCommentsTemplate = (commentIds) => {
           </p>
         </div>
       </li>
-  `);
-  });
-  return template;
+  `;
+};
+
+const createCommentsTemplate = (commentIds) => {
+  const comments = new Array(commentIds.length).fill().map(generateComment);
+
+  const commentsTemplate = comments.map((comment) => createCommentTemplate(comment)).join(``);
+
+  return commentsTemplate;
 };
 
 
 const createGenresTemplate = (genres) => {
-  let template = ``;
-
-  genres.forEach((genre) => {
-    template += `<span class="film-details__genre">${genre}</span>`;
-  });
-
-  return template;
+  return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
 };
 
 const createEmojiListInputsTemplate = () => {
-  let template = ``;
-
-  EMOJIS.forEach((emoji) => {
-    template += (
-      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+  return EMOJIS.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
           <label class="film-details__emoji-label" for="emoji-${emoji}">
           <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
         </label>
-      `);
-  });
-
-  return template;
+      `).join(``);
 };
 
 export const createFilmPopupTemplate = (film) => {
