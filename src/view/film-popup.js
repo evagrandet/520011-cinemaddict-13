@@ -37,13 +37,19 @@ const createGenresTemplate = (genres) => {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
 };
 
-const createEmojiListInputsTemplate = () => {
-  return EMOJIS.map((emoji) => `
+const createEmojiInputTemplate = (emoji) => {
+  return `
     <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="${emoji}">
     </label>
-  `).join(``);
+  `;
+};
+
+const createEmojiListInputsTemplate = () => {
+  const emojiListTemplate = EMOJIS.map((emoji) => createEmojiInputTemplate(emoji)).join(``);
+
+  return emojiListTemplate;
 };
 
 export const createFilmPopupTemplate = (film) => {
