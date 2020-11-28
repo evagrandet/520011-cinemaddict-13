@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {ReleaseDates, Duration, DescriptionLength, CommentsCount, RatingLimits, AgeRatings} from '../const';
-import {getRandomInteger, generateItem, generateUniqItems} from '../util';
+import {getRandomInteger, generateItem, generateUniqueItems} from '../util';
 
 export const MINS_IN_HOUR = 60;
 export const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -20,9 +20,9 @@ export const generateFilm = () => {
 
   const title = generateItem(titlesItems);
   const director = generateItem(directorItems);
-  const writers = generateUniqItems(writerItems).join(`, `);
-  const actors = generateUniqItems(actorItems).join(`, `);
-  const genres = generateUniqItems(genresItems);
+  const writers = generateUniqueItems(writerItems).join(`, `);
+  const actors = generateUniqueItems(actorItems).join(`, `);
+  const genres = generateUniqueItems(genresItems);
   const country = generateItem(countryItems);
 
   const generateDuration = () => {

@@ -11,7 +11,7 @@ export const generateItem = (items) => {
   return items[randomIndex];
 };
 
-export const generateUniqItems = (items) => {
+export const generateUniqueItems = (items) => {
   const randomLength = getRandomInteger(1, items.length - 1);
   const uniqItems = [];
   for (let i = 0; i <= randomLength; i++) {
