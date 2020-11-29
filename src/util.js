@@ -13,11 +13,11 @@ export const generateItem = (items) => {
 
 export const generateUniqueItems = (items) => {
   const randomLength = getRandomInteger(1, items.length - 1);
-  const uniqItems = [];
+  const uniqueItems = [];
   for (let i = 0; i <= randomLength; i++) {
     const randomIndex = getRandomInteger(0, items.length - 1);
-    uniqItems.push(items[randomIndex]);
+    uniqueItems.push(items[randomIndex]);
   }
 
-  return Array.from(new Set(uniqItems));
+  return Array.from(new Set(uniqueItems));
 };
