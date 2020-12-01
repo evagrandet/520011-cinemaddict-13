@@ -1,11 +1,11 @@
-import {createElement} from '../util';
 import {DescriptionSymbols} from '../const';
 
 export const createFilmCardTemplate = (film) => {
   const {poster, title, rating, releaseDate, duration, genres, description, isInWatchlist, isWatched, isFavorite, commentIds} = film;
 
   const getControlClass = (property) => property ? `film-card__controls-item--active` : ``;
-  return `<article class="film-card">
+  return `
+    <article class="film-card">
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
@@ -24,26 +24,3 @@ export const createFilmCardTemplate = (film) => {
     </article>
   `;
 };
-
-export default class FilmCardView {
-  constructor(film) {
-    this._element = null;
-    this._film = film;
-  }
-
-  getTemplate() {
-    return createFilmCardTemplate(this._film);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-}
