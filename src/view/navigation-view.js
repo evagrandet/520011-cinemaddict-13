@@ -1,10 +1,10 @@
 import {createElement} from '../util';
 
-const FilterName = {
-  all: `All movies`,
-  watchlist: `Watchlist`,
-  history: `History`,
-  favorites: `Favorites`
+export const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
 };
 
 const createFilterTemplate = (filter) => {
@@ -12,7 +12,7 @@ const createFilterTemplate = (filter) => {
   const filterClass = name === `all` ? `main-navigation__item--active` : ``;
 
   return `<a href="#${name}" class="main-navigation__item ${filterClass}">
-      ${FilterName[name]}
+      ${FilterType[name]}
       <span class="main-navigation__item-count">
         ${count}
       </span>
