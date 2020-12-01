@@ -9,9 +9,9 @@ export const FilterType = {
 
 const createFilterTemplate = (filter) => {
   const {name, count} = filter;
-  const filterClass = name === `all` ? `main-navigation__item--active` : ``;
+  const activeFilterClass = name === `ALL` ? `main-navigation__item--active` : ``;
 
-  return `<a href="#${name}" class="main-navigation__item ${filterClass}">
+  return `<a href="#${name}" class="main-navigation__item ${activeFilterClass}">
       ${FilterType[name]}
       <span class="main-navigation__item-count">
         ${count}
