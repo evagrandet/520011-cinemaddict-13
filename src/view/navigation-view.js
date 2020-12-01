@@ -1,9 +1,18 @@
 import {createElement} from '../util';
 
+const FilterName = {
+  all: `All movies`,
+  watchlist: `Watchlist`,
+  history: `History`,
+  favorites: `Favorites`
+};
+
 const createFilterTemplate = (filter) => {
   const {name, count} = filter;
-  return `<a href="#${name}" class="main-navigation__item main-navigation__item">
-      ${name}
+  const filterClass = name === `all` ? `main-navigation__item--active` : ``;
+
+  return `<a href="#${name}" class="main-navigation__item ${filterClass}">
+      ${FilterName[name]}
       <span class="main-navigation__item-count">
         ${count}
       </span>

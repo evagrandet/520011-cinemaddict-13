@@ -11,11 +11,11 @@ import StatisticsView from './view/statistics-view';
 import {generateFilm} from './mock/film';
 import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './util';
+import {ESC_KEY} from './const';
 
 const FILMS_COUNT = 20;
 const FILMS_COUNT_PER_STEP = 5;
 const EXTRA_FILMS_COUNT = 2;
-const ESC_KEY = `Escape`;
 
 const films = new Array(FILMS_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
@@ -52,7 +52,7 @@ const renderFilm = (filmsContainer, film) => {
     bodyElement.classList.add(`hide-overflow`);
     render(footerElement, new FilmPopupView(film).getElement(), RenderPosition.AFTEREND);
 
-    const filmPopup = document.querySelector(`.film-details`);
+    const filmPopup = bodyElement.querySelector(`.film-details`);
     const closeFilmPopupBtn = filmPopup.querySelector(`.film-details__close-btn`);
 
     closeFilmPopupBtn.addEventListener(`click`, () => {
