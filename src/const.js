@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 
+export const ESC_KEY = `Escape`;
+
 export const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 
 export const PeriodComments = {
