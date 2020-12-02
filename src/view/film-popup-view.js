@@ -2,13 +2,13 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {EMOJIS} from '../const';
 import {generateComment} from '../mock/comment';
+import {createElement} from '../util';
 dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comment) => {
   const {author, date, emoji, text} = comment;
 
-  return `
-    <li class="film-details__comment">
+  return `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
       </span>
@@ -38,8 +38,7 @@ const createGenresTemplate = (genres) => {
 };
 
 const createEmojiInputTemplate = (emoji) => {
-  return `
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+  return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
     <label class="film-details__emoji-label" for="emoji-${emoji}">
       <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="${emoji}">
     </label>
@@ -52,13 +51,12 @@ const createEmojiListInputsTemplate = () => {
   return emojiListTemplate;
 };
 
-export const createFilmPopupTemplate = (film) => {
+const createFilmPopupTemplate = (film) => {
   const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, commentIds} = film;
   const commentsTemplate = createCommentsTemplate(commentIds);
   const genresTemplate = createGenresTemplate(genres);
   const emojiListInputsTemplate = createEmojiListInputsTemplate();
-  return `
-    <section class="film-details">
+  return `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
           <div class="film-details__close">
@@ -159,3 +157,26 @@ export const createFilmPopupTemplate = (film) => {
   </section>
 `;
 };
+
+export default class FilmPopupView {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
