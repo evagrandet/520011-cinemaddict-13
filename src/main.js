@@ -15,7 +15,7 @@ import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './util';
 import {ESC_KEY} from './const';
 
-const FILMS_COUNT = 0;
+const FILMS_COUNT = 20;
 const FILMS_COUNT_PER_STEP = 5;
 const EXTRA_FILMS_COUNT = 2;
 
