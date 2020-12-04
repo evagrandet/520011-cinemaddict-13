@@ -84,7 +84,6 @@ const renderFilmsBorder = (boardContainer, boardFilms) => {
   const ratedFilmsContainer = new RatedFilmsView();
   const commentedFilmsContainer = new CommentedFilmsView();
 
-  const filmsBoardContainer = boardContainer.querySelector(`.films-list__container`);
 
   if (boardFilms.length === 0) {
     render(boardContainer, noFilmsBoard.getElement(), RenderPosition.BEFOREEND);
@@ -92,6 +91,7 @@ const renderFilmsBorder = (boardContainer, boardFilms) => {
   }
 
   render(boardContainer, filmsBoard.getElement(), RenderPosition.BEFOREEND);
+  const filmsBoardContainer = boardContainer.querySelector(`.films-list__container`);
 
 
   boardFilms
@@ -103,7 +103,7 @@ const renderFilmsBorder = (boardContainer, boardFilms) => {
 
     render(filmsBoardContainer, new ShowMoreBtnView().getElement(), RenderPosition.AFTEREND);
 
-    const loadMoreButton = filmsBoard.querySelector(`.films-list__show-more`);
+    const loadMoreButton = filmsBoard.getElement().querySelector(`.films-list__show-more`);
 
     const onLoadMoreBtnClick = (evt) => {
       evt.preventDefault();
@@ -121,11 +121,10 @@ const renderFilmsBorder = (boardContainer, boardFilms) => {
     loadMoreButton.addEventListener(`click`, onLoadMoreBtnClick);
   }
 
+  render(filmsBoard.getElement(), ratedFilmsContainer.getElement(), RenderPosition.BEFOREEND);
+  render(filmsBoard.getElement(), commentedFilmsContainer.getElement(), RenderPosition.BEFOREEND);
 
-  render(filmsBoard, ratedFilmsContainer.getElement(), RenderPosition.BEFOREEND);
-  render(filmsBoard, commentedFilmsContainer.getElement(), RenderPosition.BEFOREEND);
-
-  const topFilmsSections = filmsBoard.querySelectorAll(`.films-list--extra`);
+  const topFilmsSections = filmsBoard.getElement().querySelectorAll(`.films-list--extra`);
 
   topFilmsSections.forEach((section) => {
     const container = section.querySelector(`.films-list__container`);
