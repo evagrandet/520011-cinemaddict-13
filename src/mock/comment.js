@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {PeriodComments, EMOJIS} from '../const';
-import {getRandomInteger, generateItem} from '../util';
+import {getRandomInteger, generateItem} from '../utils/common';
 
 const COMMENTS_COUNT = 30;
 
