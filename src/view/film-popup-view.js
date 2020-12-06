@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {EMOJIS} from '../const';
 import {generateComment} from '../mock/comment';
-import {createElement} from '../util';
+import AbstractView from './abstract-view';
 dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comment) => {
@@ -158,9 +158,9 @@ const createFilmPopupTemplate = (film) => {
 `;
 };
 
-export default class FilmPopupView {
+export default class FilmPopupView extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
   }
 
@@ -168,15 +168,4 @@ export default class FilmPopupView {
     return createFilmPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
