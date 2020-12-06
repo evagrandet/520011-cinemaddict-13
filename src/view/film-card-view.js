@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view';
 import {DescriptionSymbols} from '../const';
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {poster, title, rating, releaseDate, duration, genres, description, isInWatchlist, isWatched, isFavorite, commentIds} = film;
 
   const getControlClass = (property) => property ? `film-card__controls-item--active` : ``;
@@ -29,9 +29,23 @@ export default class FilmCardView extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
+
+    this._clickHandler = this._clickHandler.bind(this);
+  }
+
+  _clickHandler() {
+    this._callback.click();
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
+  }
+
+  setOpenPopupClickHandler(callback) {
+    this._callback.click = callback;
+
+    this.getElement()
+      .querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`)
+      .forEach((element) => element.addEventListener(`click`, this._clickHandler));
   }
 }

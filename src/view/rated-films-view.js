@@ -1,6 +1,6 @@
 import AbstractView from './abstract-view';
 
-export const createRatedFilmsTemplate = () => {
+const createRatedFilmsTemplate = () => {
   return `<section class="films-list films-list--extra">
       <h2 class="films-list__title">Top rated</h2>
 
