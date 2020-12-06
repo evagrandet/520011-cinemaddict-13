@@ -1,4 +1,4 @@
-import {createElement} from '../util';
+import AbstractView from './abstract-view';
 
 export const FilterType = {
   ALL: `All movies`,
@@ -35,9 +35,9 @@ const createNavigationTemplate = (filters) => {
   `;
 };
 
-export default class NavigationView {
+export default class NavigationView extends AbstractView {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
   }
 
@@ -45,15 +45,4 @@ export default class NavigationView {
     return createNavigationTemplate(this._filters);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
