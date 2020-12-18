@@ -58,7 +58,10 @@ export const generateFilm = () => {
     return `${integerValue}.${fractionalValue}`;
   };
 
+  const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
   return {
+    id: generateId(),
     poster,
     title,
     originTitle: title,
@@ -72,7 +75,7 @@ export const generateFilm = () => {
     genres,
     country,
     description: generateDescription(DESCRIPTION),
-    isInWatchlist: Boolean(getRandomInteger(0, 1)),
+    isWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     commentIds: generateCommentIds(),
