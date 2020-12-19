@@ -3,6 +3,12 @@ import dayjs from "dayjs";
 export const ESC_KEY = `Escape`;
 export const FILMS_COUNT_PER_STEP = 5;
 
+export const SortType = {
+  BY_DEFAULT: `default`,
+  BY_DATE: `by-date`,
+  BY_RATING: `by-rating`
+};
+
 
 export const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 
