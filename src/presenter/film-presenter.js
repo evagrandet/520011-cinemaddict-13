@@ -8,6 +8,7 @@ const Mode = {
   OPEN: `OPEN`,
 };
 
+
 export default class FilmPresenter {
   constructor(filmsListContainer, changeData, changeMode) {
     this._filmsListContainer = filmsListContainer;
@@ -109,6 +110,12 @@ export default class FilmPresenter {
     this._mode = Mode.OPEN;
 
     render(document.body, this._filmPopupComponent, RenderPosition.BEFOREEND);
+
+    this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
+    this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
+
+    this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
   }
 
   _escKeyDownHandler(evt) {
