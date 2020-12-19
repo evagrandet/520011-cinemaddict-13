@@ -1,6 +1,5 @@
 import NavigationView from './view/navigation-view';
 import ProfileView from './view/profile-view';
-import SortingView from './view/sorting-view';
 import StatisticsView from './view/statistics-view';
 
 import PagePresenter from './presenter/page-presenter';
@@ -22,7 +21,6 @@ const pagePresenter = new PagePresenter(mainElement);
 
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
 render(mainElement, new NavigationView(filters), RenderPosition.AFTERBEGIN);
-render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
 
 
 render(footerElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
