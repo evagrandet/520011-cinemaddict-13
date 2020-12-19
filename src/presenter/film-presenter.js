@@ -135,8 +135,5 @@ export default class FilmPresenter {
 
   destroy() {
     remove(this._filmComponent);
-    remove(this._filmPopupComponent);
-
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 }

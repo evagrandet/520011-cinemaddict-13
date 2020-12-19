@@ -38,7 +38,7 @@ export const CommentsCount = {
 
 export const RatingLimits = {
   MIN: 0,
-  MAX: 10
+  MAX: 9
 };
 
 export const AgeRatings = {
