@@ -51,8 +51,10 @@ const createEmojiListInputsTemplate = () => {
   return emojiListTemplate;
 };
 
+const getCheckedState = (isChecked) => isChecked ? `checked` : ``;
+
 const createFilmPopupTemplate = (film) => {
-  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, commentIds} = film;
+  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
   const commentsTemplate = createCommentsTemplate(commentIds);
   const genresTemplate = createGenresTemplate(genres);
   const emojiListInputsTemplate = createEmojiListInputsTemplate();
@@ -121,13 +123,13 @@ const createFilmPopupTemplate = (film) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${getCheckedState(isWatchlist)}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${getCheckedState(isWatched)}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${getCheckedState(isFavorite)}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
@@ -178,6 +180,18 @@ export default class FilmPopupView extends AbstractView {
     this._callback.click = callback;
 
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this.getElement().querySelector(`input[name="watchlist"]`).addEventListener(`change`, callback);
+  }
+
+  setWatchedClickHandler(callback) {
+    this.getElement().querySelector(`input[name="watched"]`).addEventListener(`change`, callback);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this.getElement().querySelector(`input[name="favorite"]`).addEventListener(`change`, callback);
   }
 
 }
