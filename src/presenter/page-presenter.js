@@ -121,7 +121,6 @@ export default class PagePresenter {
     if (this._pageFilms.length > FILMS_COUNT_PER_STEP) {
       this._renderLoadMoreButton();
     }
-
   }
 
   _renderPage() {
@@ -129,6 +128,7 @@ export default class PagePresenter {
       this._renderNoFilms();
       return;
     }
+
     this._renderSorting();
 
     this._renderFilmsList();
