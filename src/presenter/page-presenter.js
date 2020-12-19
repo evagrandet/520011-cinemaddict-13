@@ -41,7 +41,7 @@ export default class PagePresenter {
   }
 
   _renderSorting() {
-    render(this._pageContainer, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    render(this._filmsListContainer, this._sortingComponent, RenderPosition.BEFOREBEGIN);
   }
 
   _renderFilm(film) {
