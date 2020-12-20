@@ -15,8 +15,7 @@ export default class SortingView extends AbstractView {
     super();
 
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
-    this._resetActiveClass = this._resetActiveClass.bind(this);
-    this._setActiveClass = this._setActiveClass.bind(this);
+    this._switchActiveClass = this._switchActiveClass.bind(this);
   }
 
 
@@ -36,16 +35,12 @@ export default class SortingView extends AbstractView {
     }
 
     evt.preventDefault();
-    this._resetActiveClass();
-    this._setActiveClass(evt.target);
+    this._switchActiveClass(evt.target);
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
-  _resetActiveClass() {
+  _switchActiveClass(element) {
     this._element.querySelectorAll(`.sort__button`).forEach((item) => item.classList.remove(`sort__button--active`));
-  }
-
-  _setActiveClass(element) {
     element.classList.add(`sort__button--active`);
   }
 
