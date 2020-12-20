@@ -18,7 +18,7 @@ export default class PagePresenter {
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._filmsListContainer = null;
     this._filmPresenter = {};
-    this._currentSortType = SortType.BY_DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
 
     this._allFilmsComponent = new AllFilmsView();
     this._sortingComponent = new SortingView();
@@ -51,10 +51,10 @@ export default class PagePresenter {
 
   _sortFilms(sortType) {
     switch (sortType) {
-      case SortType.BY_DATE:
+      case SortType.DATE:
         this._pageFilms.sort(sortByDate);
         break;
-      case SortType.BY_RATING:
+      case SortType.RATING:
         this._pageFilms.sort(sortByRating);
         break;
       default:
