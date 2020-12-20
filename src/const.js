@@ -3,6 +3,12 @@ import dayjs from "dayjs";
 export const ESC_KEY = `Escape`;
 export const FILMS_COUNT_PER_STEP = 5;
 
+export const SortType = {
+  DEFAULT: `default`,
+  DATE: `by-date`,
+  RATING: `by-rating`
+};
+
 
 export const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];
 
@@ -32,7 +38,7 @@ export const CommentsCount = {
 
 export const RatingLimits = {
   MIN: 0,
-  MAX: 10
+  MAX: 9
 };
 
 export const AgeRatings = {

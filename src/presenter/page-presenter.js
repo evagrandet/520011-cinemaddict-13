@@ -8,7 +8,8 @@ import ShowMoreBtnView from "../view/show-more-btn-view";
 import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {updateItem} from '../utils/common';
-import {FILMS_COUNT_PER_STEP} from '../const';
+import {sortByDate, sortByRating} from '../utils/films';
+import {FILMS_COUNT_PER_STEP, SortType} from '../const';
 
 
 export default class PagePresenter {
@@ -17,6 +18,7 @@ export default class PagePresenter {
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._filmsListContainer = null;
     this._filmPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
 
     this._allFilmsComponent = new AllFilmsView();
     this._sortingComponent = new SortingView();
@@ -28,20 +30,47 @@ export default class PagePresenter {
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
   }
 
   init(pageFilms) {
     this._pageFilms = pageFilms.slice();
+    this._initialPageFilms = pageFilms.slice();
+
 
     render(this._pageContainer, this._allFilmsComponent, RenderPosition.BEFOREEND);
     this._filmsListContainer = this._allFilmsComponent.getElement().querySelector(`.films-list__container`);
     this._renderPage();
-    this._renderSorting();
   }
 
   _renderSorting() {
     render(this._filmsListContainer, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._pageFilms.sort(sortByDate);
+        break;
+      case SortType.RATING:
+        this._pageFilms.sort(sortByRating);
+        break;
+      default:
+        this._pageFilms = this._initialPageFilms.slice();
+    }
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilmsList();
   }
 
   _renderFilm(film) {
@@ -92,7 +121,6 @@ export default class PagePresenter {
     if (this._pageFilms.length > FILMS_COUNT_PER_STEP) {
       this._renderLoadMoreButton();
     }
-
   }
 
   _renderPage() {
@@ -100,6 +128,8 @@ export default class PagePresenter {
       this._renderNoFilms();
       return;
     }
+
+    this._renderSorting();
 
     this._renderFilmsList();
   }
