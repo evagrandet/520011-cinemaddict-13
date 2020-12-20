@@ -1,7 +1,7 @@
 import Abstract from '../view/abstract-view';
 
 export const RenderPosition = {
-  BEFOREBEGIN: `beforegebin`,
+  BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`,
