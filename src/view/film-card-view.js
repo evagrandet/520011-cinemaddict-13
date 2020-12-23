@@ -1,16 +1,20 @@
+import dayjs from "dayjs";
+import duration from 'dayjs/plugin/duration';
 import AbstractView from './abstract-view';
 import {DescriptionSymbols} from '../const';
+dayjs.extend(duration);
 
 const createFilmCardTemplate = (film) => {
-  const {poster, title, rating, releaseDate, duration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
+  const {poster, title, rating, releaseDate, filmDuration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
 
   const getControlClass = (property) => property ? `film-card__controls-item--active` : ``;
+  const {hours, minutes} = dayjs.duration(filmDuration, `minutes`).$d;
   return `<article class="film-card">
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate.format(`YYYY`)}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${hours}h ${minutes}m</span>
         <span class="film-card__genre">${genres[0]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
