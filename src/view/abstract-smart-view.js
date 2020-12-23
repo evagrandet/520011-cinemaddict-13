@@ -1,7 +1,6 @@
 import AbstractView from "./abstract-view";
 
 export default class AbstractSmartView extends AbstractView {
-
   constructor() {
     super();
     this._data = {};
