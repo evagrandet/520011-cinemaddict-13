@@ -1,4 +1,4 @@
-import AbstractSmartView from "./abstract-smart-view";
+import AbstractSmartView from './abstract-smart-view';
 import {EMOJIS} from '../const';
 
 

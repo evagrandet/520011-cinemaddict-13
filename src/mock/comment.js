@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import {PeriodComments, EMOJIS} from '../const';
 import {getRandomInteger, generateItem} from '../utils/common';
 
