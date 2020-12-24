@@ -1,9 +1,9 @@
-import AllFilmsView from "../view/all-films-view";
-import CommentedFilmsView from "../view/commented-films-view";
-import NavigationView from "../view/navigation-view";
-import NoFilmsView from "../view/no-films-view";
-import RatedFilmsView from "../view/rated-films-view";
-import SortingView from "../view/sorting-view";
+import AllFilmsView from '../view/all-films-view';
+import CommentedFilmsView from '../view/commented-films-view';
+import NavigationView from '../view/navigation-view';
+import NoFilmsView from '../view/no-films-view';
+import RatedFilmsView from '../view/rated-films-view';
+import SortingView from '../view/sorting-view';
 import ShowMoreBtnView from '../view/show-more-btn-view';
 import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from '../utils/render.js';
