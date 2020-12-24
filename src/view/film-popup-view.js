@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import duration from 'dayjs/plugin/duration';
 
 import {generateComment} from '../mock/comment';
-import AbstractView from "./abstract-view";
+import AbstractView from './abstract-view';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
