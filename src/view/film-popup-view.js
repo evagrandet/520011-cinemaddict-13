@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import duration from 'dayjs/plugin/duration';
+
 import {generateComment} from '../mock/comment';
 import AbstractView from './abstract-view';
 
+dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comment) => {
@@ -41,9 +44,11 @@ const createGenresTemplate = (genres) => {
 const getCheckedState = (isChecked) => isChecked ? `checked` : ``;
 
 const createFilmPopupTemplate = (film) => {
-  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
+  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, filmDuration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
   const commentsTemplate = createCommentsTemplate(commentIds);
   const genresTemplate = createGenresTemplate(genres);
+  const {hours, minutes} = dayjs.duration(filmDuration, `minutes`).$d;
+
   return `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
@@ -88,7 +93,7 @@ const createFilmPopupTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${hours}h ${minutes}m</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
