@@ -2,6 +2,7 @@ import {render, remove, RenderPosition, replace} from '../utils/render';
 import {ESC_KEY} from '../const';
 import FilmCardView from '../view/film-card-view';
 import FilmPopupView from '../view/film-popup-view';
+import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
 
 const Mode = {
   CLOSED: `CLOSED`,
@@ -17,6 +18,7 @@ export default class FilmPresenter {
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
+    this._newCommentComponent = null;
     this._mode = Mode.CLOSED;
 
     this._handleOpenPopupClick = this._handleOpenPopupClick.bind(this);
@@ -100,6 +102,8 @@ export default class FilmPresenter {
 
   _openFilmPopup() {
     this._filmPopupComponent = new FilmPopupView(this._film);
+    this._newCommentComponent = new FilmPopupNewCommentView();
+    const commentsContainer = this._filmPopupComponent.getElement().querySelector(`.film-details__bottom-container`);
 
     document.body.classList.add(`hide-overflow`);
 
@@ -110,6 +114,7 @@ export default class FilmPresenter {
     this._mode = Mode.OPEN;
 
     render(document.body, this._filmPopupComponent, RenderPosition.BEFOREEND);
+    render(commentsContainer, this._newCommentComponent, RenderPosition.BEFOREEND);
 
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 

@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {EMOJIS} from '../const';
 import {generateComment} from '../mock/comment';
 import AbstractView from './abstract-view';
+
 dayjs.extend(relativeTime);
 
 const createCommentTemplate = (comment) => {
@@ -37,19 +37,6 @@ const createGenresTemplate = (genres) => {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
 };
 
-const createEmojiInputTemplate = (emoji) => {
-  return `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
-    <label class="film-details__emoji-label" for="emoji-${emoji}">
-      <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="${emoji}">
-    </label>
-  `;
-};
-
-const createEmojiListInputsTemplate = () => {
-  const emojiListTemplate = EMOJIS.map((emoji) => createEmojiInputTemplate(emoji)).join(``);
-
-  return emojiListTemplate;
-};
 
 const getCheckedState = (isChecked) => isChecked ? `checked` : ``;
 
@@ -57,7 +44,6 @@ const createFilmPopupTemplate = (film) => {
   const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, duration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
   const commentsTemplate = createCommentsTemplate(commentIds);
   const genresTemplate = createGenresTemplate(genres);
-  const emojiListInputsTemplate = createEmojiListInputsTemplate();
   return `<section class="film-details">
       <form class="film-details__inner" action="" method="get">
         <div class="film-details__top-container">
@@ -142,17 +128,6 @@ const createFilmPopupTemplate = (film) => {
               ${commentsTemplate}
             </ul>
 
-            <div class="film-details__new-comment">
-              <div class="film-details__add-emoji-label"></div>
-
-                <label class="film-details__comment-label">
-                  <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-                </label>
-
-                <div class="film-details__emoji-list">
-                ${emojiListInputsTemplate}
-              </div>
-            </div>
           </section>
       </div>
     </form>
