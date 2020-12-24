@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 export const ESC_KEY = `Escape`;
 export const FILMS_COUNT_PER_STEP = 5;
