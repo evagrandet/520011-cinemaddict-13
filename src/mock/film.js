@@ -25,14 +25,6 @@ export const generateFilm = () => {
   const genres = generateUniqueItems(genresItems);
   const country = generateItem(countryItems);
 
-  const generateDuration = () => {
-    const duration = getRandomInteger(Duration.MINIMUM, Duration.MAXIMUM);
-
-    const hours = Math.round(duration / MINS_IN_HOUR);
-    const minutes = duration % MINS_IN_HOUR;
-
-    return `${hours}h ${minutes}m`;
-  };
 
   const generateDescription = (text) => {
     const textItems = text.split(`.`);
@@ -71,7 +63,7 @@ export const generateFilm = () => {
     rating: generateRating(),
     ageRating: `${getRandomInteger(AgeRatings.MIN, AgeRatings.MAX)}+`,
     releaseDate,
-    duration: generateDuration(),
+    filmDuration: getRandomInteger(Duration.MINIMUM, Duration.MAXIMUM),
     genres,
     country,
     description: generateDescription(DESCRIPTION),
