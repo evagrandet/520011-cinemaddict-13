@@ -1,5 +1,5 @@
 import {render, remove, RenderPosition, replace} from '../utils/render';
-import {ESC_KEY} from '../const';
+import {ESC_KEY, UserAction, UpdateType} from '../const';
 import FilmCardView from '../view/film-card-view';
 import FilmPopupView from '../view/film-popup-view';
 import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
@@ -66,6 +66,8 @@ export default class FilmPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -78,6 +80,8 @@ export default class FilmPresenter {
 
   _handleWatchedClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -90,6 +94,8 @@ export default class FilmPresenter {
 
   _handleWatchlistClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._film,

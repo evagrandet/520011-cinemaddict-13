@@ -1,11 +1,5 @@
 import AbstractView from './abstract-view';
-
-export const FilterType = {
-  ALL: `All movies`,
-  WATCHLIST: `Watchlist`,
-  HISTORY: `History`,
-  FAVORITES: `Favorites`,
-};
+import {FilterType} from '../const';
 
 const createFilterTemplate = (filter) => {
   const {name, count} = filter;
