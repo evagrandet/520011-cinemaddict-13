@@ -1,5 +1,6 @@
+import he from "he";
 import AbstractSmartView from './abstract-smart-view';
-import {EMOJIS} from '../const';
+import {EMOJIS, KeyCode} from '../const';
 
 
 const createEmojiInputTemplate = (emoji, emojiChecked) => {
@@ -26,7 +27,7 @@ const createFilmPopupNewCommentTemplate = (emojiTemplate, emojiChecked, comment)
     <div class="film-details__add-emoji-label">${emojiTemplate ? emojiTemplate : ``}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment ? comment : ``}</textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -42,30 +43,62 @@ export default class FilmPopupNewCommentView extends AbstractSmartView {
 
     this._emojiTemplate = null;
     this._emoji = null;
-    this._comment = null;
+    this._comment = ``;
 
-    this._setInnerHandlers();
+    this._newCommentKeydownHandler = this._newCommentKeydownHandler.bind(this);
+
+    this.restoreHandlers();
   }
 
   getTemplate() {
     return createFilmPopupNewCommentTemplate(this._emojiTemplate, this._emoji, this._comment);
   }
 
+  _newCommentKeydownHandler(evt) {
+    if ((KeyCode.CMD || evt.ctrlKey) && evt.key === KeyCode.ENTER) {
+      if (this._comment === `` || this._emoji === ``) {
+        return;
+      }
 
-  _setInnerHandlers() {
+      const newComment = {
+        text: this._comment,
+        emoji: this._emoji,
+        author: `Author`,
+        date: new Date()
+      };
+
+      this._callback.newCommentKeydown(newComment);
+      this.updateElement();
+      this.reset();
+    }
+  }
+
+
+  setNewCommentKeyDownHandler(callback) {
+    this._callback.newCommentKeydown = callback;
+    this.getElement().addEventListener(`keydown`, this._newCommentKeydownHandler);
+  }
+
+  _setEmojiChangeHandler() {
     this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => item.addEventListener(`change`, (evt) => {
       this._emojiTemplate = createCommentEmojiTemplate(evt.target.value);
+
       this._emoji = evt.target.value;
       this.updateElement();
     }));
+  }
 
+  _setCommentInputHandler() {
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, (evt) => {
-      this._comment = evt.value;
+      this._comment = evt.target.value;
     });
+
   }
 
   restoreHandlers() {
-    this._setInnerHandlers();
+    this._setCommentInputHandler();
+    this._setEmojiChangeHandler();
+    this.setNewCommentKeyDownHandler(this._callback.newCommentKeydown);
   }
 
   reset() {
