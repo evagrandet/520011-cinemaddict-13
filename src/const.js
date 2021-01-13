@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 
-export const ESC_KEY = `Escape`;
+export const KeyCode = {
+  ESC: `Escape`,
+  ENTER: `Enter`,
+  CMD: `Meta`
+};
 export const FILMS_COUNT_PER_STEP = 5;
 
 export const SortType = {
@@ -22,10 +26,10 @@ export const UpdateType = {
 };
 
 export const FilterType = {
-  ALL: `All movies`,
-  WATCHLIST: `Watchlist`,
-  HISTORY: `History`,
-  FAVORITES: `Favorites`,
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
 };
 
 
