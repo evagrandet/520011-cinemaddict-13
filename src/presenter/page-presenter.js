@@ -1,6 +1,5 @@
 import AllFilmsView from '../view/all-films-view';
 import CommentedFilmsView from '../view/commented-films-view';
-import NavigationView from '../view/navigation-view';
 import NoFilmsView from '../view/no-films-view';
 import RatedFilmsView from '../view/rated-films-view';
 import SortingView from '../view/sorting-view';
@@ -12,10 +11,13 @@ import {FILMS_COUNT_PER_STEP, SortType, UpdateType, UserAction} from '../const';
 
 
 export default class PagePresenter {
-  constructor(pageContainer, filmsModel, commentsModel) {
+  constructor(pageContainer, filmsModel, commentsModel, filterModel) {
+    this._pageContainer = pageContainer;
+
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
-    this._pageContainer = pageContainer;
+    this._filterModel = filterModel;
+
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._filmsListContainer = null;
     this._sortingComponent = null;
@@ -24,7 +26,6 @@ export default class PagePresenter {
     this._currentSortType = SortType.DEFAULT;
 
     this._allFilmsComponent = new AllFilmsView();
-    this._navigationComponent = new NavigationView();
     this._ratedFilmsComponent = new RatedFilmsView();
     this._commentedFilmsComponent = new CommentedFilmsView();
     this._noFilmsComponent = new NoFilmsView();
@@ -34,6 +35,9 @@ export default class PagePresenter {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -75,7 +79,7 @@ export default class PagePresenter {
   }
 
   _renderFilm(film) {
-    const filmPresenter = new FilmPresenter(this._filmsListContainer, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(this._filmsListContainer, this._handleViewAction, this._handleModeChange, this._commentsModel);
     this._filmPresenter[film.id] = filmPresenter;
     filmPresenter.init(film);
   }
@@ -94,10 +98,10 @@ export default class PagePresenter {
         this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
+        this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
+        this._filmsModel.updateFilm(updateType, update);
     }
   }
 
@@ -105,7 +109,7 @@ export default class PagePresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         // - обновить часть фильма (например, когда произошло действие с комментарием)
-        this._taskPresenter[data.id].init(data);
+        this._filmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
         // - обновить список (например, когда фильм отметили просмотренным/фав/маст вотч)
@@ -150,18 +154,8 @@ export default class PagePresenter {
     render(this._filmsListContainer, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
   }
 
-  _renderFilmsList() {
-    const filmsCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmsCount, FILMS_COUNT_PER_STEP));
-    this._renderFilms(films);
-
-    if (filmsCount > FILMS_COUNT_PER_STEP) {
-      this._renderLoadMoreButton();
-    }
-  }
-
-
   _renderPage() {
+    const films = this._getFilms();
     const filmsCount = this._getFilms().length;
 
     if (filmsCount === 0) {
@@ -170,8 +164,11 @@ export default class PagePresenter {
     }
 
     this._renderSorting();
+    this._renderFilms(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
 
-    this._renderFilmsList();
+    if (filmsCount > this._renderedFilmsCount) {
+      this._renderLoadMoreButton();
+    }
   }
 
   _clearPage({resetRenderedFilmsCount = false, resetSortType = false} = {}) {
@@ -195,15 +192,6 @@ export default class PagePresenter {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
-  }
-
-  _clearFilmList() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
-    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    remove(this._loadMoreButtonComponent);
   }
 
   _renderCommentedFilms() {
