@@ -1,4 +1,4 @@
-import he from "he";
+import he from 'he';
 import AbstractSmartView from './abstract-smart-view';
 import {EMOJIS, KeyCode} from '../const';
 

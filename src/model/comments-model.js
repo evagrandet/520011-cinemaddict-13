@@ -1,4 +1,4 @@
-import Observer from "../utils/observer";
+import Observer from '../utils/observer';
 
 export default class CommentsModel extends Observer {
   constructor() {

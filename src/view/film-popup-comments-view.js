@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import he from "he";
+import he from 'he';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import AbstractSmartView from './abstract-smart-view';
 
