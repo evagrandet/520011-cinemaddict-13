@@ -8,6 +8,7 @@ import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating} from '../utils/films';
 import {FILMS_COUNT_PER_STEP, SortType, UpdateType, UserAction} from '../const';
+import Filters from '../utils/filters';
 
 
 export default class PagePresenter {
@@ -47,14 +48,18 @@ export default class PagePresenter {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getFilms();
+    const filteredFilms = Filters.getFilter(films, filterType);
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getFilms().slice().sort(sortByDate);
+        return filteredFilms.sort(sortByDate);
       case SortType.RATING:
-        return this._filmsModel.getFilms().slice().sort(sortByRating);
+        return filteredFilms.sort(sortByRating);
     }
 
-    return this._filmsModel.getFilms();
+    return filteredFilms;
   }
 
   _renderSorting() {
