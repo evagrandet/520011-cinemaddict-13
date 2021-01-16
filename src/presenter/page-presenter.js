@@ -63,7 +63,7 @@ export default class PagePresenter {
   }
 
   _renderSorting() {
-    if (this._sortingComponent !== null) {
+    if (this._sortingComponent) {
       this._sortingComponent = null;
     }
 
@@ -188,11 +188,7 @@ export default class PagePresenter {
     remove(this._loadMoreButtonComponent);
     remove(this._noFilmsComponent);
 
-    if (resetRenderedFilmsCount) {
-      this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    } else {
-      this._renderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount);
-    }
+    this._renderedFilmsCount = resetRenderedFilmsCount ? FILMS_COUNT_PER_STEP : Math.min(filmsCount, this._renderedFilmsCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

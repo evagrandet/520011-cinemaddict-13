@@ -3,7 +3,7 @@ import {UserAction, UpdateType, KeyCode} from '../const';
 import FilmCardView from '../view/film-card-view';
 import FilmPopupView from '../view/film-popup-view';
 import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
-import {FilmPopupCommentsView} from '../view/film-popup-comments-view';
+import FilmPopupCommentsView from '../view/film-popup-comments-view';
 
 const Mode = {
   CLOSED: `CLOSED`,
