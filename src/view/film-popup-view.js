@@ -1,40 +1,8 @@
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import duration from 'dayjs/plugin/duration';
-
-import {generateComment} from '../mock/comment';
-import AbstractView from './abstract-view';
+import AbstractSmartView from './abstract-smart-view';
 
 dayjs.extend(duration);
-dayjs.extend(relativeTime);
-
-const createCommentTemplate = (comment) => {
-  const {author, date, emoji, text} = comment;
-
-  return `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${text}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${date.from()}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>
-  `;
-};
-
-const createCommentsTemplate = (commentIds) => {
-  const comments = new Array(commentIds.length).fill().map(generateComment);
-
-  const commentsTemplate = comments.map((comment) => createCommentTemplate(comment)).join(``);
-
-  return commentsTemplate;
-};
-
 
 const createGenresTemplate = (genres) => {
   return genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``);
@@ -44,8 +12,7 @@ const createGenresTemplate = (genres) => {
 const getCheckedState = (isChecked) => isChecked ? `checked` : ``;
 
 const createFilmPopupTemplate = (film) => {
-  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, filmDuration, genres, description, isWatchlist, isWatched, isFavorite, commentIds} = film;
-  const commentsTemplate = createCommentsTemplate(commentIds);
+  const {poster, title, originTitle, director, writers, actors, rating, country, ageRating, releaseDate, filmDuration, genres, description, isWatchlist, isWatched, isFavorite} = film;
   const genresTemplate = createGenresTemplate(genres);
   const {hours, minutes} = dayjs.duration(filmDuration, `minutes`).$d;
 
@@ -126,40 +93,27 @@ const createFilmPopupTemplate = (film) => {
         </div>
 
         <div class="film-details__bottom-container">
-          <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentIds.length}</span></h3>
 
-            <ul class="film-details__comments-list">
-              ${commentsTemplate}
-            </ul>
-
-          </section>
       </div>
     </form>
   </section>
 `;
 };
 
-export default class FilmPopupView extends AbstractView {
-  constructor(film) {
+export default class FilmPopupView extends AbstractSmartView {
+  constructor(film, comments) {
     super();
     this._film = film;
-
-    this._clickHandler = this._clickHandler.bind(this);
-  }
-
-  _clickHandler() {
-    this._callback.click();
+    this._comments = comments;
+    this.restoreHandlers();
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film);
+    return createFilmPopupTemplate(this._film, this._comments);
   }
 
   setClosePopupClickHandler(callback) {
-    this._callback.click = callback;
-
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, callback);
   }
 
   setWatchlistClickHandler(callback) {
@@ -172,6 +126,23 @@ export default class FilmPopupView extends AbstractView {
 
   setFavoriteClickHandler(callback) {
     this.getElement().querySelector(`input[name="favorite"]`).addEventListener(`change`, callback);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, callback));
+  }
+
+  setFormKeydownHandler(callback) {
+    this.getElement().querySelector(`form`).addEventListener(`keydown`, callback);
+  }
+
+
+  restoreHandlers() {
+    this.setClosePopupClickHandler();
+    this.setFormKeydownHandler();
+    this.setFavoriteClickHandler();
+    this.setWatchedClickHandler();
+    this.setWatchlistClickHandler();
   }
 
 }

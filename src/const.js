@@ -1,12 +1,35 @@
 import dayjs from 'dayjs';
 
-export const ESC_KEY = `Escape`;
+export const KeyCode = {
+  ESC: `Escape`,
+  ENTER: `Enter`,
+  CMD: `Meta`
+};
 export const FILMS_COUNT_PER_STEP = 5;
 
 export const SortType = {
   DEFAULT: `default`,
   DATE: `by-date`,
   RATING: `by-rating`
+};
+
+export const UserAction = {
+  UPDATE_FILM: `UPDATE_FILM`,
+  ADD_COMMENT: `ADD_COMMENT`,
+  DELETE_COMMENT: `DELETE_COMMENT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
+export const FilterType = {
+  ALL: `All`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`
 };
 
 

@@ -1,21 +1,24 @@
 import AbstractView from './abstract-view';
 import {SortType} from '../const';
 
-const createSortingTemplate = () => {
+const createSortingTemplate = (currentSortType) => {
+  const getActiveSortingClassName = (type) => type === currentSortType ? `sort__button--active` : ``;
+
   return `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DEFAULT)}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DATE)}" data-sort-type="${SortType.DATE}">Sort by date</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.RATING)}" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
     </ul>
   `;
 };
 
 export default class SortingView extends AbstractView {
-  constructor() {
+  constructor(currentSortType) {
     super();
 
+    this._currentSortType = currentSortType;
+
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
-    this._switchActiveClass = this._switchActiveClass.bind(this);
   }
 
 
@@ -26,7 +29,7 @@ export default class SortingView extends AbstractView {
   }
 
   getTemplate() {
-    return createSortingTemplate();
+    return createSortingTemplate(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
@@ -35,13 +38,7 @@ export default class SortingView extends AbstractView {
     }
 
     evt.preventDefault();
-    this._switchActiveClass(evt.target);
     this._callback.sortTypeChange(evt.target.dataset.sortType);
-  }
-
-  _switchActiveClass(element) {
-    this._element.querySelectorAll(`.sort__button`).forEach((item) => item.classList.remove(`sort__button--active`));
-    element.classList.add(`sort__button--active`);
   }
 
 }
