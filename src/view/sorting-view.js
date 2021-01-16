@@ -5,11 +5,10 @@ const createSortingTemplate = (currentSortType) => {
   const getActiveSortingClassName = (type) => type === currentSortType ? `sort__button--active` : ``;
 
   return `<ul class="sort">
-      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DEFAULT)}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DATE)}" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.RATING)}" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
-    </ul>
-  `;
+    <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DEFAULT)}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
+    <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DATE)}" data-sort-type="${SortType.DATE}">Sort by date</a></li>
+    <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.RATING)}" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
+  </ul>`;
 };
 
 export default class SortingView extends AbstractView {

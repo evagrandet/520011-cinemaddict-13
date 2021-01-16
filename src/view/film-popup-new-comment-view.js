@@ -26,15 +26,14 @@ const createFilmPopupNewCommentTemplate = (emojiTemplate, emojiChecked, comment)
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${emojiTemplate ? emojiTemplate : ``}</div>
 
-      <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
-      </label>
+    <label class="film-details__comment-label">
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(comment)}</textarea>
+    </label>
 
-      <div class="film-details__emoji-list">
-        ${emojiListInputsTemplate}
-      </div>
+    <div class="film-details__emoji-list">
+      ${emojiListInputsTemplate}
     </div>
-  `;
+  </div>`;
 };
 
 export default class FilmPopupNewCommentView extends AbstractSmartView {

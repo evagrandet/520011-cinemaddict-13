@@ -1,5 +1,5 @@
 import ProfileView from './view/profile-view';
-import StatisticsView from './view/statistics-view';
+import FooterStatisticsView from './view/footer-statistics-view';
 
 import PagePresenter from './presenter/page-presenter';
 import FilterPresenter from './presenter/filter-presenter';
@@ -32,7 +32,7 @@ const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
 
 
-render(footerElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
+render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 pagePresenter.init();
