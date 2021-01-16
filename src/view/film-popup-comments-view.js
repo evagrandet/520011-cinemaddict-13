@@ -34,7 +34,7 @@ const createCommentsTemplate = (comments) => {
       </ul>
   </section>`;
 };
-export class FilmPopupCommentsView extends AbstractSmartView {
+export default class FilmPopupCommentsView extends AbstractSmartView {
   constructor(comments) {
     super();
     this._comments = comments;
