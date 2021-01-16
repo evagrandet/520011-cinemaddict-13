@@ -57,11 +57,7 @@ export default class FilmPresenter {
   }
 
   _handleModelEvent(updateType, data) {
-    switch (updateType) {
-      case UpdateType.MINOR:
-        this._filmCommentsComponent.update(this._commentsModel.getComments(data.id));
-        break;
-    }
+    this._filmCommentsComponent.update(this._commentsModel.getComments(data.id));
   }
 
   setDefaultView() {
@@ -194,7 +190,6 @@ export default class FilmPresenter {
     this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
 
     this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-
 
     if (prevFilmPopupView) {
       replace(this._filmPopupComponent, prevFilmPopupView);

@@ -42,28 +42,11 @@ export default class FilterPresenter {
   _getFilters() {
     const films = this._filmsModel.getFilms();
 
-    return [
-      {
-        type: FilterType.ALL,
-        name: `All movies`,
-        count: Filters.getFilterCount(films, FilterType.ALL)
-      },
-      {
-        type: FilterType.WATCHLIST,
-        name: `Watchlist`,
-        count: Filters.getFilterCount(films, FilterType.WATCHLIST)
-      },
-      {
-        type: FilterType.HISTORY,
-        name: `History`,
-        count: Filters.getFilterCount(films, FilterType.HISTORY)
-      },
-      {
-        type: FilterType.FAVORITES,
-        name: `Favorites`,
-        count: Filters.getFilterCount(films, FilterType.FAVORITES)
-      }
-    ];
+    return Object.values(FilterType).map((filterType) => ({
+      type: filterType,
+      name: filterType,
+      count: Filters.getFilterCount(films, filterType),
+    }));
   }
 
   _handleFilterTypeChange(filterType) {

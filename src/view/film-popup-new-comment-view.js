@@ -103,7 +103,7 @@ export default class FilmPopupNewCommentView extends AbstractSmartView {
 
   reset() {
     this._emojiTemplate = null;
-    this._comment = null;
+    this._comment = ``;
     this._emoji = null;
 
     this.updateElement();

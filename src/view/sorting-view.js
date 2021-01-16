@@ -2,12 +2,12 @@ import AbstractView from './abstract-view';
 import {SortType} from '../const';
 
 const createSortingTemplate = (currentSortType) => {
-  const activeSortingClassName = (type) => type === currentSortType ? `sort__button--active` : ``;
+  const getActiveSortingClassName = (type) => type === currentSortType ? `sort__button--active` : ``;
 
   return `<ul class="sort">
-      <li><a href="#" class="sort__button ${activeSortingClassName(SortType.DEFAULT)}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
-      <li><a href="#" class="sort__button ${activeSortingClassName(SortType.DATE)}" data-sort-type="${SortType.DATE}">Sort by date</a></li>
-      <li><a href="#" class="sort__button ${activeSortingClassName(SortType.RATING)}" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DEFAULT)}" data-sort-type="${SortType.DEFAULT}">Sort by default</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.DATE)}" data-sort-type="${SortType.DATE}">Sort by date</a></li>
+      <li><a href="#" class="sort__button ${getActiveSortingClassName(SortType.RATING)}" data-sort-type="${SortType.RATING}">Sort by rating</a></li>
     </ul>
   `;
 };
