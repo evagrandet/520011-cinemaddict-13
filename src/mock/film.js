@@ -14,7 +14,7 @@ const actorItems = [`Meryl Streep`, `Katharine Hepburn`, `Ingrid Bergman`, `Bett
 const genresItems = [`Action Adventure`, `Science fiction`, `Epics/ Historical`, `Animation`, `Fantasy`, `Drama`, `Romantic Comedy`, `Crime/ Gangster`, `Horror`, `Musicals/ Dance`];
 const countryItems = [`Austria`, `Belgium`, `USA`, `Ukraine`, `Estonia`, `Hungary`, `Vatican City`];
 
-export const generateFilm = () => {
+export const generateFilm = (index) => {
   const poster = generateItem(posterItems);
   const releaseDate = dayjs(getRandomInteger(ReleaseDates.START.valueOf(), ReleaseDates.END.valueOf()));
 
@@ -50,10 +50,8 @@ export const generateFilm = () => {
     return `${integerValue}.${fractionalValue}`;
   };
 
-  const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
   return {
-    id: generateId(),
+    id: index,
     poster,
     title,
     originTitle: title,

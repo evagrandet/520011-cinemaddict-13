@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import AbstractView from './abstract-view';
 import {DescriptionSymbols} from '../const';
