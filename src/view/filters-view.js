@@ -1,13 +1,15 @@
 import AbstractView from './abstract-view';
+import {FilterType} from '../const';
+
 
 const createFilterTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
 
-  const filterCount = type !== `All` ? `<span class="main-navigation__item-count">${count}</span>` : ``;
+  const filterCount = type !== FilterType.ALL ? `<span class="main-navigation__item-count">${count}</span>` : ``;
 
   const activeFilterClassName = type === currentFilterType ? `main-navigation__item--active` : ``;
 
-  return `<a href="#${name}" class="main-navigation__item ${activeFilterClassName}" data-filter="${type}">${name === `All` ? `All movies` : name} ${filterCount}</a>`;
+  return `<a href="#${name}" class="main-navigation__item ${activeFilterClassName}" data-filter="${type}">${name === FilterType.ALL ? `All movies` : name} ${filterCount}</a>`;
 };
 
 const createFiltersTemplate = (filters, currentFilterType) => {
