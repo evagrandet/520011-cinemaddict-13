@@ -202,4 +202,15 @@ export default class PagePresenter {
   _renderRatedFilms() {
 
   }
+
+  hide() {
+    this._sortingComponent.setDefaultSortType();
+    this._sortingComponent.hide();
+    this._allFilmsComponent.hide();
+  }
+
+  show() {
+    this._sortingComponent.show();
+    this._allFilmsComponent.show();
+  }
 }

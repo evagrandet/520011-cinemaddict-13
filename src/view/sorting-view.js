@@ -40,4 +40,8 @@ export default class SortingView extends AbstractView {
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
+  setDefaultSortType() {
+    this._currentSortType = SortType.DEFAULT;
+  }
+
 }

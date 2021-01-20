@@ -1,3 +1,5 @@
+import {RankScore, RankTitle} from '../const';
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -22,14 +24,16 @@ export const generateUniqueItems = (items) => {
   return Array.from(new Set(uniqueItems));
 };
 
-export const UserAction = {
-  UPDATE_FILM: `UPDATE_FILM`,
-  ADD_COMMENT: `ADD_COMMENT`,
-  DELETE_COMMENT: `DELETE_COMMENT`
-};
+export const getUserRank = (films) => {
+  const totalWatch = films.reduce((count, film) => count + Number(film.isWatched), 0);
 
-export const UpdateType = {
-  PATCH: `PATCH`,
-  MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  if (totalWatch >= RankScore.NOVICE.MIN && totalWatch <= RankScore.NOVICE.MAX) {
+    return RankTitle.NOVICE;
+  } else if (totalWatch >= RankScore.FAN.MIN && totalWatch <= RankScore.FAN.MAX) {
+    return RankTitle.FAN;
+  } else if (totalWatch > RankScore.FAN.MAX) {
+    return RankTitle.MOVIE_BUFF;
+  } else {
+    return RankTitle.NONE;
+  }
 };
