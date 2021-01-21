@@ -36,7 +36,7 @@ const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsMod
 
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
 render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
-console.log(123, filmsModel.getFilms());
+
 const statisticComponent = new StatsView(filmsModel);
 render(mainElement, statisticComponent, RenderPosition.BEFOREEND);
 statisticComponent.hide();
@@ -50,6 +50,7 @@ menuComponent.setOnChangeHandler((menuItem) => {
 
     case MenuItem.STATS:
       pagePresenter.hide();
+      statisticComponent.updateElement();
       statisticComponent.show();
       break;
   }

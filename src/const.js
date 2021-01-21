@@ -9,8 +9,8 @@ export const FILMS_COUNT_PER_STEP = 5;
 
 export const SortType = {
   DEFAULT: `default`,
-  DATE: `by-date`,
-  RATING: `by-rating`
+  DATE: `date`,
+  RATING: `rating`
 };
 
 export const UserAction = {

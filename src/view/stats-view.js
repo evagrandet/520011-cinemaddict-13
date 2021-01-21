@@ -27,31 +27,27 @@ const getUserRankTemplate = (rank) => {
     </p>` : ``;
 };
 
+const createStatTemplate = (statPeriod, activeFilter) => {
+  const getCheckedStatus = (filter) => activeFilter === filter ? `checked` : ``;
+  return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${statPeriod}" value="${statPeriod}" ${getCheckedStatus(statPeriod)}>
+  <label for="statistic-${statPeriod}" class="statistic__filters-label">${statPeriod === StatisticPeriod.ALL_TIME ? `All time` : statPeriod[0].toUpperCase() + statPeriod.slice(1)}</label>`;
+};
 
-const createStatsTemplate = (statistic) => {
+const createStatsTemplate = (activeFilter) => {
+  return Object.values(StatisticPeriod).map((period) => createStatTemplate(period, activeFilter)).join(``);
+};
+
+
+const createStatisticsTemplate = (statistic) => {
   const {watchedFilmsCount, userRank, totalDuration, topGenre, activeFilter} = statistic;
   const {hours, minutes} = dayjs.duration(totalDuration, `minutes`).$d;
   const userRankTemplate = getUserRankTemplate(userRank);
-  const getCheckedStatus = (filter) => activeFilter === filter ? `checked` : ``;
+  const statsTemplate = createStatsTemplate(activeFilter);
   return `<section class="statistic">
     ${userRankTemplate}
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="${StatisticPeriod.ALL_TIME}" ${getCheckedStatus(StatisticPeriod.ALL_TIME)}>
-      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="${StatisticPeriod.TODAY}" ${getCheckedStatus(StatisticPeriod.TODAY)}>
-      <label for="statistic-today" class="statistic__filters-label">Today</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="${StatisticPeriod.WEEK}" ${getCheckedStatus(StatisticPeriod.WEEK)}>
-      <label for="statistic-week" class="statistic__filters-label">Week</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="${StatisticPeriod.MONTH}" ${getCheckedStatus(StatisticPeriod.MONTH)}>
-      <label for="statistic-month" class="statistic__filters-label">Month</label>
-
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="${StatisticPeriod.YEAR}" ${getCheckedStatus(StatisticPeriod.YEAR)}>
-      <label for="statistic-year" class="statistic__filters-label">Year</label>
+      ${statsTemplate}
     </form>
 
     <ul class="statistic__text-list">
@@ -91,7 +87,7 @@ export default class StatsView extends AbstractSmartView {
   }
 
   getTemplate() {
-    return createStatsTemplate(this._getFilmsDataByFilter(this._activeFilter));
+    return createStatisticsTemplate(this._getFilmsDataByFilter(this._activeFilter));
   }
 
   restoreHandlers() {

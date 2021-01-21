@@ -4,6 +4,7 @@ import FilmCardView from '../view/film-card-view';
 import FilmPopupView from '../view/film-popup-view';
 import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
 import FilmPopupCommentsView from '../view/film-popup-comments-view';
+import dayjs from 'dayjs';
 
 const Mode = {
   CLOSED: `CLOSED`,
@@ -97,7 +98,8 @@ export default class FilmPresenter {
             {},
             this._film,
             {
-              isWatched: !this._film.isWatched
+              isWatched: !this._film.isWatched,
+              watchingDate: dayjs(),
             }
         )
     );
