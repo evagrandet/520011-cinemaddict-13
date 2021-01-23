@@ -13,7 +13,7 @@ import {generateFilm} from './mock/film';
 import {render, RenderPosition} from './utils/render';
 import {generateComments} from './mock/comment';
 import {MenuItem} from './const.js';
-import StatsView from './view/stats-view';
+import StatisticsView from './view/statistics-view';
 
 const FILMS_COUNT = 20;
 
@@ -37,7 +37,7 @@ const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsMod
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
 render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
 
-const statisticComponent = new StatsView(filmsModel);
+const statisticComponent = new StatisticsView(filmsModel);
 render(mainElement, statisticComponent, RenderPosition.BEFOREEND);
 statisticComponent.hide();
 

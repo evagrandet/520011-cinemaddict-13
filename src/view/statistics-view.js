@@ -71,7 +71,7 @@ const createStatisticsTemplate = (statistic) => {
 
   </section>`;
 };
-export default class StatsView extends AbstractSmartView {
+export default class StatisticsView extends AbstractSmartView {
   constructor(filmsModel) {
     super();
 
