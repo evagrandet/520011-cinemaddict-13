@@ -2,7 +2,7 @@ import AllFilmsView from '../view/all-films-view';
 import CommentedFilmsView from '../view/commented-films-view';
 import NoFilmsView from '../view/no-films-view';
 import RatedFilmsView from '../view/rated-films-view';
-import SortingView from '../view/sorting-view';
+import SortView from '../view/sort-view';
 import LoadMoreBtnView from '../view/load-more-btn-view';
 import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from '../utils/render.js';
@@ -21,7 +21,7 @@ export default class PagePresenter {
 
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._filmsListContainer = null;
-    this._sortingComponent = null;
+    this._sortComponent = null;
     this._loadMoreButtonComponent = null;
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
@@ -62,14 +62,14 @@ export default class PagePresenter {
     return filteredFilms;
   }
 
-  _renderSorting() {
-    if (this._sortingComponent) {
-      this._sortingComponent = null;
+  _renderSort() {
+    if (this._sortComponent) {
+      this._sortComponent = null;
     }
 
-    this._sortingComponent = new SortingView(this._currentSortType);
-    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._filmsListContainer, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._filmsListContainer, this._sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
 
@@ -168,7 +168,7 @@ export default class PagePresenter {
       return;
     }
 
-    this._renderSorting();
+    this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
 
     if (filmsCount > this._renderedFilmsCount) {
@@ -184,7 +184,7 @@ export default class PagePresenter {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
 
-    remove(this._sortingComponent);
+    remove(this._sortComponent);
     remove(this._loadMoreButtonComponent);
     remove(this._noFilmsComponent);
 
@@ -204,13 +204,13 @@ export default class PagePresenter {
   }
 
   hide() {
-    this._sortingComponent.setDefaultSortType();
-    this._sortingComponent.hide();
+    this._sortComponent.setDefaultSortType();
+    this._sortComponent.hide();
     this._allFilmsComponent.hide();
   }
 
   show() {
-    this._sortingComponent.show();
+    this._sortComponent.show();
     this._allFilmsComponent.show();
   }
 }
