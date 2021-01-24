@@ -2,10 +2,9 @@ import dayjs from 'dayjs';
 import {ReleaseDates, Duration, DescriptionLength, CommentsCount, RatingLimits, AgeRatings} from '../const';
 import {getRandomInteger, generateItem, generateUniqueItems} from '../utils/common';
 
-export const MINS_IN_HOUR = 60;
 export const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
-
+const WATCHED_DATE_START = dayjs(`2020-06-05`);
 const posterItems = [`made-for-each-other.png`, `popeye-meets-sinbad.png`, `sagebrush-trail.jpg`, `santa-claus-conquers-the-martians.jpg`, `the-dance-of-life.jpg`, `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
 const titlesItems = [`Breakfast at Tiffany's`, `2001: A Space Odyssey`, `Monty Python's Life of Brian`, `Casablanca`, `Gaslight`, `Gone with the Wind`, `Roman Holiday`];
 const directorItems = [`Alice Winocour`, `Amma Asante`, `Ana Lily Amirpour`, `Andrea Arnold`, `Anna Boden`, `Barbra Streisand`, `Elizabeth Banks`, `Gail Mancuso`, `Gia Coppola`];
@@ -69,5 +68,6 @@ export const generateFilm = (index) => {
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     commentIds: generateCommentIds(),
+    watchingDate: dayjs(getRandomInteger(WATCHED_DATE_START, dayjs()))
   };
 };

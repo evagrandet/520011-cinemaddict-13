@@ -1,5 +1,6 @@
 import ProfileView from './view/profile-view';
-import StatisticsView from './view/statistics-view';
+import FooterStatisticsView from './view/footer-statistics-view';
+import MenuView from './view/menu-view';
 
 import PagePresenter from './presenter/page-presenter';
 import FilterPresenter from './presenter/filter-presenter';
@@ -7,9 +8,12 @@ import FilterPresenter from './presenter/filter-presenter';
 import FilmsModel from './model/films-model';
 import CommentsModel from './model/comments-model';
 import FilterModel from './model/filter-model';
+
 import {generateFilm} from './mock/film';
 import {render, RenderPosition} from './utils/render';
 import {generateComments} from './mock/comment';
+import {MenuItem} from './const.js';
+import StatisticsView from './view/statistics-view';
 
 const FILMS_COUNT = 20;
 
@@ -26,13 +30,33 @@ const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
 const mainElement = bodyElement.querySelector(`.main`);
 const footerElement = bodyElement.querySelector(`.footer`);
+const menuComponent = new MenuView();
 const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
-const filterPresenter = new FilterPresenter(mainElement, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
+render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
 
+const statisticComponent = new StatisticsView(filmsModel);
+render(mainElement, statisticComponent, RenderPosition.BEFOREEND);
+statisticComponent.hide();
 
-render(footerElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
+menuComponent.setOnChangeHandler((menuItem) => {
+  switch (menuItem) {
+    case MenuItem.FILMS:
+      statisticComponent.hide();
+      pagePresenter.show();
+      break;
+
+    case MenuItem.STATS:
+      pagePresenter.hide();
+      statisticComponent.updateElement();
+      statisticComponent.show();
+      break;
+  }
+});
+
+render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 pagePresenter.init();
