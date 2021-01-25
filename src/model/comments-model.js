@@ -1,18 +1,19 @@
+import dayjs from 'dayjs';
 import Observer from '../utils/observer';
 
 export default class CommentsModel extends Observer {
   constructor() {
     super();
 
-    this._comments = [];
+    this._comments = {};
   }
 
-  getComments() {
-    return this._comments;
+  getComments(id) {
+    return this._comments[id];
   }
 
-  setComments(comments) {
-    this._comments = comments.slice();
+  setComments(id, comments) {
+    this._comments[id] = comments.slice();
   }
 
   addComment(updateType, update) {
@@ -41,7 +42,7 @@ export default class CommentsModel extends Observer {
     return {
       id: comment.id,
       author: comment.author,
-      date: comment.date,
+      date: dayjs(comment.date),
       emoji: comment.emotion,
       text: comment.comment,
     };
@@ -51,7 +52,7 @@ export default class CommentsModel extends Observer {
     return {
       id: comment.id,
       author: comment.author,
-      date: comment.date,
+      date: comment.date.toISOString(),
       emotion: comment.emoji,
       comment: comment.text,
     };

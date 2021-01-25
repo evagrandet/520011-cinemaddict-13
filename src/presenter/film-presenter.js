@@ -43,7 +43,7 @@ export default class FilmPresenter {
     this._film = film;
     const prevFilmCardView = this._filmComponent;
     this._filmComponent = new FilmCardView(film);
-    this._setFilmComments(this._film);
+    this._getFilmComments(this._film);
     this._filmComponent.setOpenPopupClickHandler(this._handleOpenPopupClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
@@ -71,7 +71,6 @@ export default class FilmPresenter {
   }
 
   _handleOpenPopupClick() {
-    this._changeMode();
     this._openFilmPopup();
   }
 
@@ -178,10 +177,10 @@ export default class FilmPresenter {
     );
   }
 
-  _setFilmComments(film) {
+  _getFilmComments(film) {
     this._api.getComments(film.id)
       .then((comments) => {
-        this._commentsModel.setComments(comments);
+        this._commentsModel.setComments(film.id, comments);
       })
       .catch(() => {
         this._commentsModel.setComments([]);
@@ -191,7 +190,7 @@ export default class FilmPresenter {
   _openFilmPopup() {
     const prevFilmPopupView = this._filmPopupComponent;
     this._filmPopupComponent = new FilmPopupView(this._film);
-    this._comments = this._commentsModel.getComments();
+    this._comments = this._commentsModel.getComments(this._film.id);
     this._commentsModel.addObserver(this._handleModelEvent);
     const commentsContainer = this._filmPopupComponent.getElement().querySelector(`.film-details__bottom-container`);
     this._mode = Mode.OPEN;
@@ -248,13 +247,12 @@ export default class FilmPresenter {
   _escKeyDownHandler(evt) {
     if (evt.key === KeyCode.ESC) {
       this._changeMode();
-
-      this._closeFilmPopup();
     }
   }
 
   _closeFilmPopup() {
     remove(this._filmPopupComponent);
+    this._filmPopupComponent = null;
     this._commentsModel.removeObserver(this._handleModelEvent);
 
     document.body.classList.remove(`hide-overflow`);
