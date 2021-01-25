@@ -31,8 +31,8 @@ export default class PagePresenter {
     this._isLoading = true;
     this._filmsListContainer = null;
 
-    this._commonFilmsComponent = new CommonFilmsView(); // общий контейнер для всех состояний
-    this._allFilmsComponent = new AllFilmsView(); // заголовок всех фильмов
+    this._commonFilmsComponent = new CommonFilmsView();
+    this._allFilmsComponent = new AllFilmsView();
     this._filmsContainerComponent = new FilmsContainerView();
     this._ratedFilmsComponent = new RatedFilmsView();
     this._commentedFilmsComponent = new CommentedFilmsView();
@@ -131,16 +131,13 @@ export default class PagePresenter {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть фильма (например, когда произошло действие с комментарием)
         this._filmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда фильм отметили просмотренным/фав/маст вотч)
         this._clearPage();
         this._renderPage();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю страницу (например, при переключении фильтра)
         this._clearPage({resetRenderedFilmsCount: true, resetSortType: true});
         this._renderPage();
         break;
