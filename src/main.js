@@ -24,15 +24,12 @@ const headerElement = bodyElement.querySelector(`.header`);
 const mainElement = bodyElement.querySelector(`.main`);
 const footerElement = bodyElement.querySelector(`.footer`);
 const menuComponent = new MenuView();
-// const comments = generateComments(films);
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 
-
-// commentsModel.setComments(comments);
 
 render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
 render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
@@ -56,7 +53,6 @@ menuComponent.setOnChangeHandler((menuItem) => {
   }
 });
 
-// render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 pagePresenter.init();
@@ -64,6 +60,7 @@ pagePresenter.init();
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
+    render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
