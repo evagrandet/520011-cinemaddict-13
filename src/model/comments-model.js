@@ -7,8 +7,8 @@ export default class CommentsModel extends Observer {
     this._comments = [];
   }
 
-  getComments(filmId) {
-    return this._comments[filmId];
+  getComments() {
+    return this._comments;
   }
 
   setComments(comments) {
@@ -35,5 +35,25 @@ export default class CommentsModel extends Observer {
     ];
 
     this._notify(updateType, update);
+  }
+
+  static adaptToClient(comment) {
+    return {
+      id: comment.id,
+      author: comment.author,
+      date: comment.date,
+      emoji: comment.emotion,
+      text: comment.comment,
+    };
+  }
+
+  static adaptToServer(comment) {
+    return {
+      id: comment.id,
+      author: comment.author,
+      date: comment.date,
+      emotion: comment.emoji,
+      comment: comment.text,
+    };
   }
 }

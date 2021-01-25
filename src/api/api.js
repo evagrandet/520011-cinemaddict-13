@@ -1,3 +1,6 @@
+import CommentsModel from "../model/comments-model";
+import FilmsModel from "../model/films-model";
+
 const Method = {
   GET: `GET`,
   PUT: `PUT`
@@ -22,17 +25,26 @@ export default class Api {
   }
 
   getFilms() {
-    return this._sendRequest({url: Url.MOVIES}).then(Api.toJSON);
+    return this._sendRequest({url: Url.MOVIES})
+      .then(Api.toJSON)
+      .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
   updateFilm(film) {
-    this._sendRequest({
+    return this._sendRequest({
       url: `${Url.MOVIES}/${film.id}`,
       method: Method.PUT,
-      body: JSON.stringify(film),
+      body: JSON.stringify(FilmsModel.adaptToServer(film)),
       headers: new Headers({"Content-Type": `application/json`})
     })
-      .then(Api.toJSON);
+      .then(Api.toJSON)
+      .then(FilmsModel.adaptToClient);
+  }
+
+  getComments(filmId) {
+    return this._sendRequest({url: `${Url.COMMENTS}/${filmId}`})
+      .then(Api.toJSON)
+      .then((comments) => comments.map(CommentsModel.adaptToClient));
   }
 
   _sendRequest({
@@ -50,7 +62,7 @@ export default class Api {
 
 
   static checkStatus(response) {
-    if (response.status < SuccessHTTPStatusRange.MIN || response.status > SuccessHTTPStatusRange.Max) {
+    if (response.status < SuccessHTTPStatusRange.MIN || response.status > SuccessHTTPStatusRange.MAX) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
 
@@ -58,7 +70,7 @@ export default class Api {
   }
 
   static toJSON(response) {
-    response.toJSON();
+    return response.json();
   }
 
   static catchError(err) {
