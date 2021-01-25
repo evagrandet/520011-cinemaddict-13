@@ -11,6 +11,7 @@ import {FILMS_COUNT_PER_STEP, SortType, UpdateType, UserAction} from '../const';
 import Filters from '../utils/filters';
 import LoadingView from '../view/loading-view';
 import FilmsContainerView from '../view/films-container-view';
+import CommonFilmsView from '../view/common-films-view';
 
 
 export default class PagePresenter {
@@ -23,15 +24,16 @@ export default class PagePresenter {
     this._api = api;
 
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    this._filmsContainerComponent = null;
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
-    this._filmsContainer = null;
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
+    this._filmsListContainer = null;
 
-    this._allFilmsComponent = new AllFilmsView();
+    this._commonFilmsComponent = new CommonFilmsView(); // общий контейнер для всех состояний
+    this._allFilmsComponent = new AllFilmsView(); // заголовок всех фильмов
+    this._filmsContainerComponent = new FilmsContainerView();
     this._ratedFilmsComponent = new RatedFilmsView();
     this._commentedFilmsComponent = new CommentedFilmsView();
     this._noFilmsComponent = new NoFilmsView();
@@ -48,7 +50,8 @@ export default class PagePresenter {
   }
 
   init() {
-    render(this._pageContainer, this._allFilmsComponent, RenderPosition.BEFOREEND);
+    this._filmsListContainer = this._commonFilmsComponent.getElement().querySelector(`.films-list`);
+    render(this._pageContainer, this._commonFilmsComponent, RenderPosition.BEFOREEND);
     this._renderPage();
   }
 
@@ -74,13 +77,12 @@ export default class PagePresenter {
 
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._allFilmsComponent, this._sortComponent, RenderPosition.BEFOREBEGIN);
+    render(this._commonFilmsComponent, this._sortComponent, RenderPosition.BEFOREBEGIN);
   }
 
   _renderFilmsContainer() {
-    this._filmsContainerComponent = new FilmsContainerView();
-    render(this._allFilmsComponent, this._filmsContainerComponent, RenderPosition.AFTERBEGIN);
-    this._filmsContainer = this._filmsContainerComponent.getElement().querySelector(`.films-list__container`);
+    render(this._filmsListContainer, this._allFilmsComponent, RenderPosition.AFTERBEGIN);
+    render(this._filmsListContainer, this._filmsContainerComponent, RenderPosition.BEFOREEND);
   }
 
 
@@ -95,7 +97,7 @@ export default class PagePresenter {
   }
 
   _renderFilm(film) {
-    const filmPresenter = new FilmPresenter(this._filmsContainer, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
+    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
     this._filmPresenter[film.id] = filmPresenter;
     filmPresenter.init(film);
   }
@@ -105,11 +107,11 @@ export default class PagePresenter {
   }
 
   _renderNoFilms() {
-    render(this._allFilmsComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
+    render(this._filmsListContainer, this._noFilmsComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderLoading() {
-    render(this._allFilmsComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
+    render(this._filmsListContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -177,7 +179,7 @@ export default class PagePresenter {
     this._loadMoreButtonComponent = new LoadMoreBtnView();
     this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
 
-    render(this._filmsContainerComponent, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
+    render(this._filmsContainerComponent, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
   }
 
 
@@ -234,7 +236,7 @@ export default class PagePresenter {
   hide() {
     this._sortComponent.setDefaultSortType();
     this._sortComponent.hide();
-    this._allFilmsComponent.hide();
+    this._commonFilmsComponent.hide();
   }
 
   show() {
