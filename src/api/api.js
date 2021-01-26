@@ -3,7 +3,9 @@ import FilmsModel from '../model/films-model';
 
 const Method = {
   GET: `GET`,
-  PUT: `PUT`
+  PUT: `PUT`,
+  POST: `POST`,
+  DELETE: `DELETE`
 };
 
 const SuccessHTTPStatusRange = {
@@ -45,6 +47,14 @@ export default class Api {
     return this._sendRequest({url: `${Url.COMMENTS}/${filmId}`})
       .then(Api.toJSON)
       .then((comments) => comments.map(CommentsModel.adaptToClient));
+  }
+
+  addComment() {
+
+  }
+
+  deleteComment() {
+    return this._sendRequest({url: })
   }
 
   _sendRequest({
