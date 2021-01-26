@@ -17,7 +17,7 @@ const createFilmCardTemplate = (film) => {
       <span class="film-card__duration">${hours}h ${minutes}m</span>
       <span class="film-card__genre">${genres[0]}</span>
     </p>
-    <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+    <img src="./${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${description.length > DescriptionSymbols.MAX ? `${description.substring(0, DescriptionSymbols.MAX_VISIBLE)}…` : `${description}.`}</p>
     <a class="film-card__comments">${commentIds.length} comments</a>
     <div class="film-card__controls">

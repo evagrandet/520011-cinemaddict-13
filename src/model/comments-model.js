@@ -1,18 +1,19 @@
+import dayjs from 'dayjs';
 import Observer from '../utils/observer';
 
 export default class CommentsModel extends Observer {
   constructor() {
     super();
 
-    this._comments = [];
+    this._comments = {};
   }
 
-  getComments(filmId) {
-    return this._comments[filmId];
+  getComments(id) {
+    return this._comments[id];
   }
 
-  setComments(comments) {
-    this._comments = comments.slice();
+  setComments(id, comments) {
+    this._comments[id] = comments.slice();
   }
 
   addComment(updateType, update) {
@@ -35,5 +36,25 @@ export default class CommentsModel extends Observer {
     ];
 
     this._notify(updateType, update);
+  }
+
+  static adaptToClient(comment) {
+    return {
+      id: comment.id,
+      author: comment.author,
+      date: dayjs(comment.date),
+      emoji: comment.emotion,
+      text: comment.comment,
+    };
+  }
+
+  static adaptToServer(comment) {
+    return {
+      id: comment.id,
+      author: comment.author,
+      date: comment.date.toISOString(),
+      emotion: comment.emoji,
+      comment: comment.text,
+    };
   }
 }

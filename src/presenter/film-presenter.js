@@ -13,17 +13,19 @@ const Mode = {
 
 
 export default class FilmPresenter {
-  constructor(filmsListContainer, changeData, changeMode, commentsModel) {
+  constructor(filmsListContainer, changeData, changeMode, commentsModel, api) {
     this._filmsListContainer = filmsListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._commentsModel = commentsModel;
+    this._api = api;
 
     this._filmComponent = null;
     this._filmPopupComponent = null;
     this._filmCommentsComponent = null;
     this._newCommentComponent = null;
     this._mode = Mode.CLOSED;
+    this._comments = [];
 
     this._handleOpenPopupClick = this._handleOpenPopupClick.bind(this);
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
@@ -41,6 +43,7 @@ export default class FilmPresenter {
     this._film = film;
     const prevFilmCardView = this._filmComponent;
     this._filmComponent = new FilmCardView(film);
+    this._getFilmComments(this._film);
     this._filmComponent.setOpenPopupClickHandler(this._handleOpenPopupClick);
     this._filmComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
@@ -68,7 +71,6 @@ export default class FilmPresenter {
   }
 
   _handleOpenPopupClick() {
-    this._changeMode();
     this._openFilmPopup();
   }
 
@@ -175,14 +177,25 @@ export default class FilmPresenter {
     );
   }
 
+  _getFilmComments(film) {
+    this._api.getComments(film.id)
+      .then((comments) => {
+        this._commentsModel.setComments(film.id, comments);
+      })
+      .catch(() => {
+        this._commentsModel.setComments([]);
+      });
+  }
+
   _openFilmPopup() {
     const prevFilmPopupView = this._filmPopupComponent;
-    this._comments = this._commentsModel.getComments(this._film.id);
     this._filmPopupComponent = new FilmPopupView(this._film);
+    this._comments = this._commentsModel.getComments(this._film.id);
+    this._commentsModel.addObserver(this._handleModelEvent);
     const commentsContainer = this._filmPopupComponent.getElement().querySelector(`.film-details__bottom-container`);
     this._mode = Mode.OPEN;
 
-    this._commentsModel.addObserver(this._handleModelEvent);
+
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._filmPopupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
@@ -234,13 +247,12 @@ export default class FilmPresenter {
   _escKeyDownHandler(evt) {
     if (evt.key === KeyCode.ESC) {
       this._changeMode();
-
-      this._mode = Mode.CLOSED;
     }
   }
 
   _closeFilmPopup() {
     remove(this._filmPopupComponent);
+    this._filmPopupComponent = null;
     this._commentsModel.removeObserver(this._handleModelEvent);
 
     document.body.classList.remove(`hide-overflow`);
