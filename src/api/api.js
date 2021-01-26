@@ -49,12 +49,25 @@ export default class Api {
       .then((comments) => comments.map(CommentsModel.adaptToClient));
   }
 
-  addComment() {
-
+  addComment(update) {
+    console.log(7, update);
+    return this._sendRequest({
+      url: `${Url.COMMENTS}/${update.filmId}`,
+      method: Method.POST,
+      body: JSON.stringify(CommentsModel.adaptToServer(update.comment)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(CommentsModel.adaptToClient);
   }
 
-  deleteComment() {
-    return this._sendRequest({url: })
+  deleteComment(comment) {
+    return this._sendRequest({
+      url: `${Url.COMMENTS}/${comment.id}`,
+      method: Method.DELETE,
+    })
+      .then(Api.toJSON)
+      .then(CommentsModel.adaptToClient);
   }
 
   _sendRequest({

@@ -39,6 +39,7 @@ export default class CommentsModel extends Observer {
   }
 
   static adaptToClient(comment) {
+    console.log(`adapttoclient: `, comment);
     return {
       id: comment.id,
       author: comment.author,
@@ -49,8 +50,9 @@ export default class CommentsModel extends Observer {
   }
 
   static adaptToServer(comment) {
+    console.log(comment);
     return {
-      id: comment.id,
+      id: `${comment.id}`,
       author: comment.author,
       date: comment.date.toISOString(),
       emotion: comment.emoji,

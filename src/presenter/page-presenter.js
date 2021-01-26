@@ -121,10 +121,16 @@ export default class PagePresenter {
           .then((response) => this._filmsModel.updateFilm(updateType, response));
         break;
       case UserAction.ADD_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        console.log(1, update);
+        this._api.addComment(update)
+          .then((response) => {
+            console.log(`response: `, response);
+            this._filmsModel.updateFilm(updateType, response);
+          });
         break;
       case UserAction.DELETE_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.deleteComment(update)
+          .then((response) => this._filmsModel.updateFilm(updateType, response));
     }
   }
 

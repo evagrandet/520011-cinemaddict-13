@@ -20,6 +20,7 @@ export default class FilmsModel extends Observer {
   }
 
   updateFilm(updateType, update) {
+    console.log(8, update);
     const index = this._films
       .findIndex((film) => film.id === update.id);
 

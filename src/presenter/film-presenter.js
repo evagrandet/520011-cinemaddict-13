@@ -133,19 +133,8 @@ export default class FilmPresenter {
     this._changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
-        Object.assign(
-            {},
-            this._film,
-            {
-              commentIds: [...comments, commentId]
-            }
-        )
-    );
-
-    this._commentsModel.addComment(
-        UpdateType.MINOR,
         {
-          id: this._film.id,
+          filmId: this._film.id,
           comment
         }
     );
