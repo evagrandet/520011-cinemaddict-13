@@ -238,6 +238,6 @@ export default class PagePresenter {
 
   show() {
     this._sortComponent.show();
-    this._allFilmsComponent.show();
+    this._commonFilmsComponent.show();
   }
 }
