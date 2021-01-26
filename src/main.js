@@ -16,8 +16,8 @@ import {MenuItem, UpdateType} from './const.js';
 import Api from './api/api';
 
 const AUTHORIZATION = `Basic NSoYZtfMpZzk6V8Hq`;
-const END_POINT = `https://13.ecmascript.pages.academy/cinemaddict`;
-const api = new Api(END_POINT, AUTHORIZATION);
+const ENDPOINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+const api = new Api(ENDPOINT, AUTHORIZATION);
 
 const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
