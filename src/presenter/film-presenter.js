@@ -5,12 +5,12 @@ import FilmPopupView from '../view/film-popup-view';
 import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
 import FilmPopupCommentsView from '../view/film-popup-comments-view';
 import dayjs from 'dayjs';
+import {State} from '../const';
 
 const Mode = {
   CLOSED: `CLOSED`,
   OPEN: `OPEN`,
 };
-
 
 export default class FilmPresenter {
   constructor(filmsListContainer, changeData, changeMode, commentsModel, api) {
@@ -70,6 +70,37 @@ export default class FilmPresenter {
     }
   }
 
+  setViewState(state, data) {
+    const resetDeletedComment = () => this._filmCommentsComponent.updateData({deletedCommentId: null});
+    const resetAddingComment = () => this._newCommentComponent.updateData({isAdding: false, isError: false});
+    switch (state) {
+      case State.ADDING:
+        this._newCommentComponent.updateData({
+          isAdding: true,
+        });
+        break;
+      case State.DELETING:
+        this._filmCommentsComponent.updateData({
+          deletedCommentId: data.id
+        });
+        break;
+      case State.ABORT_ADDING:
+        this._newCommentComponent.shake(resetAddingComment, this._newCommentComponent.getElement());
+        break;
+      case State.ABORT_DELETING:
+        this._filmCommentsComponent.setAbortDeletingState(resetDeletedComment, data.id);
+        break;
+      case State.DEFAULT:
+        this._newCommentComponent.updateData({
+          isAdding: false,
+        });
+        this._filmCommentsComponent.updateData({
+          deletedCommentId: null
+        });
+        break;
+    }
+  }
+
   _handleOpenPopupClick() {
     this._openFilmPopup();
   }
@@ -122,46 +153,25 @@ export default class FilmPresenter {
   }
 
   _handleCommentKeyDown(comment) {
-    const comments = this._film.commentIds;
-    let commentId = 0;
-
-    if (comments.length > 0) {
-      commentId = Math.max(...comments.map((item) => item)) + 1;
-    }
-
-    comment.id = commentId;
     this._changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
         {
-          filmId: this._film.id,
+          id: this._film.id,
           comment
         }
     );
-
   }
 
   _handleDeleteCommentClick(commentId) {
-    const currentComments = this._commentsModel.getComments(this._film.id).slice();
-    const remainingComments = currentComments.filter((comment) => comment.id !== parseInt(commentId, 10));
+    const deletedComment = this._commentsModel.getComments(this._film.id).find((comment) => comment.id === commentId);
 
     this._changeData(
         UserAction.DELETE_COMMENT,
-        UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              comments: remainingComments
-            }
-        )
-    );
-
-    this._commentsModel.deleteComment(
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         {
           id: this._film.id,
-          idDeleted: parseInt(commentId, 10)
+          comment: deletedComment,
         }
     );
   }
@@ -172,7 +182,7 @@ export default class FilmPresenter {
         this._commentsModel.setComments(film.id, comments);
       })
       .catch(() => {
-        this._commentsModel.setComments([]);
+        this._commentsModel.setComments(film.id, []);
       });
   }
 
@@ -206,31 +216,23 @@ export default class FilmPresenter {
   }
 
   _renderCommentsComponent(container) {
-    const prevCommentsView = this._filmCommentsComponent;
+    if (this._filmCommentsComponent) {
+      this._filmCommentsComponent = null;
+    }
+
     this._filmCommentsComponent = new FilmPopupCommentsView(this._comments);
     this._filmCommentsComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
 
-
-    if (prevCommentsView) {
-      replace(this._filmCommentsComponent, prevCommentsView);
-      remove(prevCommentsView);
-    } else {
-      render(container, this._filmCommentsComponent, RenderPosition.AFTERBEGIN);
-    }
+    render(container, this._filmCommentsComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderNewCommentComponent(container) {
-    const prevNewCommentView = this._newCommentComponent;
+    if (this._newCommentComponent) {
+      this._newCommentComponent = null;
+    }
     this._newCommentComponent = new FilmPopupNewCommentView();
     this._newCommentComponent.setNewCommentKeyDownHandler(this._handleCommentKeyDown);
-
-
-    if (prevNewCommentView) {
-      replace(this._newCommentComponent, prevNewCommentView);
-      remove(prevNewCommentView);
-    } else {
-      render(container, this._newCommentComponent, RenderPosition.BEFOREEND);
-    }
+    render(container, this._newCommentComponent, RenderPosition.BEFOREEND);
   }
 
   _escKeyDownHandler(evt) {

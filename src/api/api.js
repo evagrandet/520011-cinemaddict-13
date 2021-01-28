@@ -50,24 +50,27 @@ export default class Api {
   }
 
   addComment(update) {
-    console.log(7, update);
     return this._sendRequest({
-      url: `${Url.COMMENTS}/${update.filmId}`,
+      url: `${Url.COMMENTS}/${update.id}`,
       method: Method.POST,
       body: JSON.stringify(CommentsModel.adaptToServer(update.comment)),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then(Api.toJSON)
-      .then(CommentsModel.adaptToClient);
+      .then((response) => {
+        const comments = response.comments.map(CommentsModel.adaptToClient);
+        return {
+          film: FilmsModel.adaptToClient(response.movie),
+          comments,
+        };
+      });
   }
 
-  deleteComment(comment) {
+  deleteComment(data) {
     return this._sendRequest({
-      url: `${Url.COMMENTS}/${comment.id}`,
+      url: `${Url.COMMENTS}/${data.comment.id}`,
       method: Method.DELETE,
-    })
-      .then(Api.toJSON)
-      .then(CommentsModel.adaptToClient);
+    });
   }
 
   _sendRequest({

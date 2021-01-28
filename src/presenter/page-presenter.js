@@ -7,7 +7,7 @@ import LoadMoreBtnView from '../view/load-more-btn-view';
 import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating} from '../utils/films';
-import {FILMS_COUNT_PER_STEP, SortType, UpdateType, UserAction} from '../const';
+import {FILMS_COUNT_PER_STEP, SortType, State, UpdateType, UserAction} from '../const';
 import Filters from '../utils/filters';
 import LoadingView from '../view/loading-view';
 import FilmsContainerView from '../view/films-container-view';
@@ -15,13 +15,15 @@ import CommonFilmsView from '../view/common-films-view';
 
 
 export default class PagePresenter {
-  constructor(pageContainer, filmsModel, commentsModel, filterModel, api) {
+  constructor(pageContainer, filmsModel, commentsModel, filterModel, api, profileComponent) {
     this._pageContainer = pageContainer;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
     this._api = api;
+
+    this._profileComponent = profileComponent;
 
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
     this._sortComponent = null;
@@ -120,17 +122,42 @@ export default class PagePresenter {
         this._api.updateFilm(update)
           .then((response) => this._filmsModel.updateFilm(updateType, response));
         break;
+
       case UserAction.ADD_COMMENT:
-        console.log(1, update);
+        this._filmPresenter[update.id].setViewState(State.ADDING);
         this._api.addComment(update)
           .then((response) => {
-            console.log(`response: `, response);
-            this._filmsModel.updateFilm(updateType, response);
+            this._commentsModel.addComment(updateType, response);
+            this._commentsModel.setComments(response.film.id, response.comments);
+            this._filmsModel.updateFilm(updateType, response.film);
+            this._filmPresenter[update.id].setViewState(State.DEFAULT);
+          })
+          .catch(() => {
+            this._filmPresenter[update.id].setViewState(State.ABORT_ADDING);
           });
         break;
+
       case UserAction.DELETE_COMMENT:
+        this._filmPresenter[update.id].setViewState(State.DELETING, update.comment);
         this._api.deleteComment(update)
-          .then((response) => this._filmsModel.updateFilm(updateType, response));
+          .then(() => {
+            this._commentsModel.deleteComment(updateType, update);
+            this._filmsModel.updateFilm(
+                updateType,
+                Object.assign(
+                    {},
+                    this._filmsModel.getFilm(update.id),
+                    {
+                      commentIds: this._commentsModel.getComments(update.id).map((item) => item.id)
+                    }
+                )
+            );
+            this._filmPresenter[update.id].setViewState(State.DEFAULT);
+          })
+          .catch(() => {
+            this._filmPresenter[update.id].setViewState(State.ABORT_DELETING, update.comment);
+          });
+        break;
     }
   }
 
@@ -142,6 +169,7 @@ export default class PagePresenter {
       case UpdateType.MINOR:
         this._clearPage();
         this._renderPage();
+        this._profileComponent.setRank(this._filmsModel.getFilms());
         break;
       case UpdateType.MAJOR:
         this._clearPage({resetRenderedFilmsCount: true, resetSortType: true});
@@ -151,6 +179,7 @@ export default class PagePresenter {
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderPage();
+        this._profileComponent.setRank(this._filmsModel.getFilms());
         break;
     }
   }
@@ -199,10 +228,10 @@ export default class PagePresenter {
       this._renderNoFilms();
       return;
     }
+
     this._renderFilmsContainer();
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
-
     if (filmsCount > this._renderedFilmsCount) {
       this._renderLoadMoreButton();
     }
