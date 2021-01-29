@@ -56,7 +56,7 @@ export default class FilmPopupNewCommentView extends AbstractSmartView {
 
   _newCommentKeydownHandler(evt) {
     if ((evt.metaKey || evt.ctrlKey) && evt.key === KeyCode.ENTER) {
-      if (this._comment === `` || this._emoji === ``) {
+      if (this._comment === `` || this._emoji === null) {
         return;
       }
 
