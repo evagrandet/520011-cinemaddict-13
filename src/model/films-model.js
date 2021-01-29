@@ -19,6 +19,10 @@ export default class FilmsModel extends Observer {
     return this._films;
   }
 
+  getFilm(id) {
+    return this._films.find((film) => film.id === id);
+  }
+
   updateFilm(updateType, update) {
     const index = this._films
       .findIndex((film) => film.id === update.id);
@@ -38,7 +42,7 @@ export default class FilmsModel extends Observer {
 
   static adaptToServer(film) {
     return {
-      'id': film.id,
+      'id': String(film.id),
       'comments': film.commentIds,
       'film_info': {
         'title': film.title,
@@ -69,7 +73,7 @@ export default class FilmsModel extends Observer {
 
   static adaptToClient(film) {
     return {
-      id: film.id,
+      id: String(film.id),
       poster: film.film_info.poster,
       title: film.film_info.title,
       originTitle: film.film_info.alternative_title,

@@ -23,15 +23,16 @@ const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
 const mainElement = bodyElement.querySelector(`.main`);
 const footerElement = bodyElement.querySelector(`.footer`);
+const profileComponent = new ProfileView();
 const menuComponent = new MenuView();
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
-const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, api);
+const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, api, profileComponent);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 
 
-render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
+render(headerElement, profileComponent, RenderPosition.BEFOREEND);
 render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
 
 const statisticComponent = new StatisticsView(filmsModel);

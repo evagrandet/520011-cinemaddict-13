@@ -17,14 +17,17 @@ export default class CommentsModel extends Observer {
   }
 
   addComment(updateType, update) {
-    this._comments[update.id] = [update.comment, ...this._comments[update.id]];
+    const data = {
+      id: update.film.id,
+      comments: update.comments
+    };
+    this._comments[data.id] = [...this._comments[data.id], data.comments.pop()];
 
-    this._notify(updateType, update);
+    this._notify(updateType, data);
   }
 
   deleteComment(updateType, update) {
-    const index = this._comments[update.id]
-      .findIndex((comment) => comment.id === update.idDeleted);
+    const index = this._comments[update.id].findIndex((comment) => comment.id === update.comment.id);
 
     if (index === -1) {
       throw new Error(`Can't delete nonexistent comment`);
@@ -40,7 +43,7 @@ export default class CommentsModel extends Observer {
 
   static adaptToClient(comment) {
     return {
-      id: comment.id,
+      id: String(comment.id),
       author: comment.author,
       date: dayjs(comment.date),
       emoji: comment.emotion,
@@ -50,7 +53,7 @@ export default class CommentsModel extends Observer {
 
   static adaptToServer(comment) {
     return {
-      id: comment.id,
+      id: String(comment.id),
       author: comment.author,
       date: comment.date.toISOString(),
       emotion: comment.emoji,
