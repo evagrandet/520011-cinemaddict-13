@@ -82,9 +82,11 @@ window.addEventListener(`load`, () => {
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
+  document.querySelector(`.logo`).textContent = `Cinemaddict`;
   apiWithProvider.sync();
 });
 
 window.addEventListener(`offline`, () => {
   document.title += ` [offline]`;
+  document.querySelector(`.logo`).textContent = `Cinemaddict [offline]`;
 });
