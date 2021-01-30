@@ -14,8 +14,8 @@ const Mode = {
 };
 
 export default class FilmPresenter {
-  constructor(filmsListContainer, changeData, changeMode, commentsModel, api) {
-    this._filmsListContainer = filmsListContainer;
+  constructor(filmsContainer, changeData, changeMode, commentsModel, api) {
+    this._filmsContainer = filmsContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._commentsModel = commentsModel;
@@ -54,7 +54,7 @@ export default class FilmPresenter {
     if (prevFilmCardView) {
       replace(this._filmComponent, prevFilmCardView);
     } else {
-      render(this._filmsListContainer, this._filmComponent, RenderPosition.BEFOREEND);
+      render(this._filmsContainer, this._filmComponent, RenderPosition.BEFOREEND);
       return;
     }
 
@@ -76,6 +76,7 @@ export default class FilmPresenter {
     const resetAddingComment = () => this._newCommentComponent.updateData({isAdding: false, isError: false});
     switch (state) {
       case State.ADDING:
+        console.log(this._newCommentComponent);
         this._newCommentComponent.updateData({
           isAdding: true,
         });
@@ -241,6 +242,7 @@ export default class FilmPresenter {
     }
     this._newCommentComponent = new FilmPopupNewCommentView();
     this._newCommentComponent.setNewCommentKeyDownHandler(this._handleCommentKeyDown);
+    console.log(3, container, this._newCommentComponent);
     render(container, this._newCommentComponent, RenderPosition.BEFOREEND);
   }
 
