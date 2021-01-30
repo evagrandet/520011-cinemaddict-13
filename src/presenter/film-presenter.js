@@ -1,11 +1,12 @@
 import {render, remove, RenderPosition, replace} from '../utils/render';
-import {UserAction, UpdateType, KeyCode} from '../const';
+import {UserAction, UpdateType, KeyCode, State} from '../const';
 import FilmCardView from '../view/film-card-view';
 import FilmPopupView from '../view/film-popup-view';
 import FilmPopupNewCommentView from '../view/film-popup-new-comment-view';
 import FilmPopupCommentsView from '../view/film-popup-comments-view';
 import dayjs from 'dayjs';
-import {State} from '../const';
+import {toast} from '../utils/toast';
+import {isOnline} from '../utils/common';
 
 const Mode = {
   CLOSED: `CLOSED`,
@@ -153,6 +154,10 @@ export default class FilmPresenter {
   }
 
   _handleCommentKeyDown(comment) {
+    if (!isOnline()) {
+      toast(`You can't add a new comment offline`);
+      return;
+    }
     this._changeData(
         UserAction.ADD_COMMENT,
         UpdateType.PATCH,
@@ -164,6 +169,10 @@ export default class FilmPresenter {
   }
 
   _handleDeleteCommentClick(commentId) {
+    if (!isOnline()) {
+      toast(`You can't delete comment offline`);
+    }
+
     const deletedComment = this._commentsModel.getComments(this._film.id).find((comment) => comment.id === commentId);
 
     this._changeData(
