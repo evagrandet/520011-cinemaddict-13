@@ -77,14 +77,16 @@ apiWithProvider.getFilms()
   });
 
 window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/service-worker.js`);
+  navigator.serviceWorker.register(`./service-worker.js`);
 });
 
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(` [offline]`, ``);
+  document.querySelector(`.logo`).textContent = `Cinemaddict`;
   apiWithProvider.sync();
 });
 
 window.addEventListener(`offline`, () => {
   document.title += ` [offline]`;
+  document.querySelector(`.logo`).textContent = `Cinemaddict [offline]`;
 });
