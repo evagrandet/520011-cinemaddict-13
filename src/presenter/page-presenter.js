@@ -5,13 +5,18 @@ import RatedFilmsView from '../view/rated-films-view';
 import SortView from '../view/sort-view';
 import LoadMoreBtnView from '../view/load-more-btn-view';
 import FilmPresenter from './film-presenter';
-import {render, RenderPosition, remove} from '../utils/render.js';
-import {sortByDate, sortByRating} from '../utils/films';
-import {FILMS_COUNT_PER_STEP, SortType, State, UpdateType, UserAction} from '../const';
+import {render, RenderPosition, remove, replace} from '../utils/render.js';
+import {sortByDate, sortByRating, sortByCommentsCount} from '../utils/films';
+import {SortType, State, UpdateType, UserAction} from '../const';
 import Filters from '../utils/filters';
 import LoadingView from '../view/loading-view';
 import FilmsContainerView from '../view/films-container-view';
 import CommonFilmsView from '../view/common-films-view';
+
+const CardCount = {
+  STEP: 5,
+  EXTRA: 2
+};
 
 
 export default class PagePresenter {
@@ -25,7 +30,7 @@ export default class PagePresenter {
 
     this._profileComponent = profileComponent;
 
-    this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
+    this._renderedFilmsCount = CardCount.STEP;
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
     this._filmPresenter = {};
@@ -36,8 +41,8 @@ export default class PagePresenter {
     this._commonFilmsComponent = new CommonFilmsView();
     this._allFilmsComponent = new AllFilmsView();
     this._filmsContainerComponent = new FilmsContainerView();
-    this._ratedFilmsComponent = new RatedFilmsView();
-    this._commentedFilmsComponent = new CommentedFilmsView();
+    this._ratedFilmsComponent = null;
+    this._commentedFilmsComponent = null;
     this._noFilmsComponent = new NoFilmsView();
     this._loadingComponent = new LoadingView();
 
@@ -61,7 +66,6 @@ export default class PagePresenter {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
     const filteredFilms = Filters.getFilter(films, filterType);
-
     switch (this._currentSortType) {
       case SortType.DATE:
         return filteredFilms.sort(sortByDate);
@@ -192,7 +196,7 @@ export default class PagePresenter {
 
   _handleLoadMoreButtonClick() {
     const filmsCount = this._getFilms().length;
-    const minRenderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount + FILMS_COUNT_PER_STEP);
+    const minRenderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount + CardCount.STEP);
 
     const films = this._getFilms().slice(this._renderedFilmsCount, minRenderedFilmsCount);
 
@@ -250,7 +254,7 @@ export default class PagePresenter {
     remove(this._loadingComponent);
     remove(this._noFilmsComponent);
 
-    this._renderedFilmsCount = resetRenderedFilmsCount ? FILMS_COUNT_PER_STEP : Math.min(filmsCount, this._renderedFilmsCount);
+    this._renderedFilmsCount = resetRenderedFilmsCount ? CardCount.STEP : Math.min(filmsCount, this._renderedFilmsCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
@@ -258,7 +262,20 @@ export default class PagePresenter {
   }
 
   _renderCommentedFilms() {
+    console.log(this._filmsModel.getAll());
 
+    this._currentMostCommentedFilms = this._filmsModel.getAll().sort(sortByCommentsCount).slice(CardCount.EXTRA);
+    console.log(this._currentMostCommentedFilms);
+    if (this._currentMostCommentedFilms.some((film) => film.commentIds.length !== 0)) {
+      const oldMostCommentedView = this._mostCommentedFilmsView;
+      this._commentedFilmsComponent = new CommentedFilmsView();
+      if (oldMostCommentedView) {
+        replace(this._mostCommentedFilmsView, oldMostCommentedView);
+      } else {
+        const filmsContainer = new FilmsContainerView();
+        render(this._commonFilmsComponent, this._mostCommentedFilmsView, RenderPosition.BEFOREEND);
+      }
+    }
   }
 
   _renderRatedFilms() {

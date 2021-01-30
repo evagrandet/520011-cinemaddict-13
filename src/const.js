@@ -2,7 +2,6 @@ export const KeyCode = {
   ESC: `Escape`,
   ENTER: `Enter`,
 };
-export const FILMS_COUNT_PER_STEP = 5;
 
 export const SortType = {
   DEFAULT: `default`,
