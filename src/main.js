@@ -77,7 +77,7 @@ apiWithProvider.getFilms()
   });
 
 window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/service-worker.js`);
+  navigator.serviceWorker.register(`./service-worker.js`);
 });
 
 window.addEventListener(`online`, () => {
