@@ -7,29 +7,39 @@ import LoadMoreBtnView from '../view/load-more-btn-view';
 import FilmPresenter from './film-presenter';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating} from '../utils/films';
-import {FILMS_COUNT_PER_STEP, SortType, UpdateType, UserAction} from '../const';
+import {FILMS_COUNT_PER_STEP, SortType, State, UpdateType, UserAction} from '../const';
 import Filters from '../utils/filters';
+import LoadingView from '../view/loading-view';
+import FilmsContainerView from '../view/films-container-view';
+import CommonFilmsView from '../view/common-films-view';
 
 
 export default class PagePresenter {
-  constructor(pageContainer, filmsModel, commentsModel, filterModel) {
+  constructor(pageContainer, filmsModel, commentsModel, filterModel, api, profileComponent) {
     this._pageContainer = pageContainer;
 
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
+    this._api = api;
+
+    this._profileComponent = profileComponent;
 
     this._renderedFilmsCount = FILMS_COUNT_PER_STEP;
-    this._filmsListContainer = null;
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
     this._filmPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._filmsListContainer = null;
 
+    this._commonFilmsComponent = new CommonFilmsView();
     this._allFilmsComponent = new AllFilmsView();
+    this._filmsContainerComponent = new FilmsContainerView();
     this._ratedFilmsComponent = new RatedFilmsView();
     this._commentedFilmsComponent = new CommentedFilmsView();
     this._noFilmsComponent = new NoFilmsView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -42,8 +52,8 @@ export default class PagePresenter {
   }
 
   init() {
-    render(this._pageContainer, this._allFilmsComponent, RenderPosition.BEFOREEND);
-    this._filmsListContainer = this._allFilmsComponent.getElement().querySelector(`.films-list__container`);
+    this._filmsListContainer = this._commonFilmsComponent.getElement().querySelector(`.films-list`);
+    render(this._pageContainer, this._commonFilmsComponent, RenderPosition.BEFOREEND);
     this._renderPage();
   }
 
@@ -69,7 +79,12 @@ export default class PagePresenter {
 
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._filmsListContainer, this._sortComponent, RenderPosition.BEFOREBEGIN);
+    render(this._commonFilmsComponent, this._sortComponent, RenderPosition.BEFOREBEGIN);
+  }
+
+  _renderFilmsContainer() {
+    render(this._filmsListContainer, this._allFilmsComponent, RenderPosition.AFTERBEGIN);
+    render(this._filmsListContainer, this._filmsContainerComponent, RenderPosition.BEFOREEND);
   }
 
 
@@ -84,7 +99,7 @@ export default class PagePresenter {
   }
 
   _renderFilm(film) {
-    const filmPresenter = new FilmPresenter(this._filmsListContainer, this._handleViewAction, this._handleModeChange, this._commentsModel);
+    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
     this._filmPresenter[film.id] = filmPresenter;
     filmPresenter.init(film);
   }
@@ -94,37 +109,77 @@ export default class PagePresenter {
   }
 
   _renderNoFilms() {
-    render(this._allFilmsComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
+    render(this._filmsListContainer, this._noFilmsComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderLoading() {
+    render(this._filmsListContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update)
+          .then((response) => this._filmsModel.updateFilm(updateType, response));
         break;
+
       case UserAction.ADD_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmPresenter[update.id].setViewState(State.ADDING);
+        this._api.addComment(update)
+          .then((response) => {
+            this._commentsModel.addComment(updateType, response);
+            this._commentsModel.setComments(response.film.id, response.comments);
+            this._filmsModel.updateFilm(updateType, response.film);
+            this._filmPresenter[update.id].setViewState(State.DEFAULT);
+          })
+          .catch(() => {
+            this._filmPresenter[update.id].setViewState(State.ABORT_ADDING);
+          });
         break;
+
       case UserAction.DELETE_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmPresenter[update.id].setViewState(State.DELETING, update.comment);
+        this._api.deleteComment(update)
+          .then(() => {
+            this._commentsModel.deleteComment(updateType, update);
+            this._filmsModel.updateFilm(
+                updateType,
+                Object.assign(
+                    {},
+                    this._filmsModel.getFilm(update.id),
+                    {
+                      commentIds: this._commentsModel.getComments(update.id).map((item) => item.id)
+                    }
+                )
+            );
+            this._filmPresenter[update.id].setViewState(State.DEFAULT);
+          })
+          .catch(() => {
+            this._filmPresenter[update.id].setViewState(State.ABORT_DELETING, update.comment);
+          });
+        break;
     }
   }
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть фильма (например, когда произошло действие с комментарием)
         this._filmPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда фильм отметили просмотренным/фав/маст вотч)
         this._clearPage();
         this._renderPage();
+        this._profileComponent.setRank(this._filmsModel.getFilms());
         break;
       case UpdateType.MAJOR:
-        // - обновить всю страницу (например, при переключении фильтра)
         this._clearPage({resetRenderedFilmsCount: true, resetSortType: true});
         this._renderPage();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderPage();
+        this._profileComponent.setRank(this._filmsModel.getFilms());
         break;
     }
   }
@@ -156,10 +211,16 @@ export default class PagePresenter {
     this._loadMoreButtonComponent = new LoadMoreBtnView();
     this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
 
-    render(this._filmsListContainer, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
+    render(this._filmsContainerComponent, this._loadMoreButtonComponent, RenderPosition.AFTEREND);
   }
 
+
   _renderPage() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmsCount = this._getFilms().length;
 
@@ -168,9 +229,9 @@ export default class PagePresenter {
       return;
     }
 
+    this._renderFilmsContainer();
     this._renderSort();
     this._renderFilms(films.slice(0, Math.min(filmsCount, this._renderedFilmsCount)));
-
     if (filmsCount > this._renderedFilmsCount) {
       this._renderLoadMoreButton();
     }
@@ -186,6 +247,7 @@ export default class PagePresenter {
 
     remove(this._sortComponent);
     remove(this._loadMoreButtonComponent);
+    remove(this._loadingComponent);
     remove(this._noFilmsComponent);
 
     this._renderedFilmsCount = resetRenderedFilmsCount ? FILMS_COUNT_PER_STEP : Math.min(filmsCount, this._renderedFilmsCount);
@@ -206,11 +268,11 @@ export default class PagePresenter {
   hide() {
     this._sortComponent.setDefaultSortType();
     this._sortComponent.hide();
-    this._allFilmsComponent.hide();
+    this._commonFilmsComponent.hide();
   }
 
   show() {
     this._sortComponent.show();
-    this._allFilmsComponent.show();
+    this._commonFilmsComponent.show();
   }
 }

@@ -1,29 +1,33 @@
+import dayjs from 'dayjs';
 import Observer from '../utils/observer';
 
 export default class CommentsModel extends Observer {
   constructor() {
     super();
 
-    this._comments = [];
+    this._comments = {};
   }
 
-  getComments(filmId) {
-    return this._comments[filmId];
+  getComments(id) {
+    return this._comments[id];
   }
 
-  setComments(comments) {
-    this._comments = comments.slice();
+  setComments(id, comments) {
+    this._comments[id] = comments.slice();
   }
 
   addComment(updateType, update) {
-    this._comments[update.id] = [update.comment, ...this._comments[update.id]];
+    const data = {
+      id: update.film.id,
+      comments: update.comments
+    };
+    this._comments[data.id] = [...this._comments[data.id], data.comments.pop()];
 
-    this._notify(updateType, update);
+    this._notify(updateType, data);
   }
 
   deleteComment(updateType, update) {
-    const index = this._comments[update.id]
-      .findIndex((comment) => comment.id === update.idDeleted);
+    const index = this._comments[update.id].findIndex((comment) => comment.id === update.comment.id);
 
     if (index === -1) {
       throw new Error(`Can't delete nonexistent comment`);
@@ -35,5 +39,25 @@ export default class CommentsModel extends Observer {
     ];
 
     this._notify(updateType, update);
+  }
+
+  static adaptToClient(comment) {
+    return {
+      id: String(comment.id),
+      author: comment.author,
+      date: dayjs(comment.date),
+      emoji: comment.emotion,
+      text: comment.comment,
+    };
+  }
+
+  static adaptToServer(comment) {
+    return {
+      id: String(comment.id),
+      author: comment.author,
+      date: comment.date.toISOString(),
+      emotion: comment.emoji,
+      comment: comment.text,
+    };
   }
 }

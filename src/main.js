@@ -1,40 +1,38 @@
-import ProfileView from './view/profile-view';
-import FooterStatisticsView from './view/footer-statistics-view';
-import MenuView from './view/menu-view';
-
-import PagePresenter from './presenter/page-presenter';
-import FilterPresenter from './presenter/filter-presenter';
-
 import FilmsModel from './model/films-model';
 import CommentsModel from './model/comments-model';
 import FilterModel from './model/filter-model';
 
-import {generateFilm} from './mock/film';
-import {render, RenderPosition} from './utils/render';
-import {generateComments} from './mock/comment';
-import {MenuItem} from './const.js';
+import ProfileView from './view/profile-view';
+import FooterStatisticsView from './view/footer-statistics-view';
+import MenuView from './view/menu-view';
 import StatisticsView from './view/statistics-view';
 
-const FILMS_COUNT = 20;
+import PagePresenter from './presenter/page-presenter';
+import FilterPresenter from './presenter/filter-presenter';
 
-const films = new Array(FILMS_COUNT).fill().map((item, index) => generateFilm(index));
-const comments = generateComments(films);
-const filmsModel = new FilmsModel();
-const commentsModel = new CommentsModel();
-const filterModel = new FilterModel();
+import {render, RenderPosition} from './utils/render';
+import {MenuItem, UpdateType} from './const.js';
 
-filmsModel.setFilms(films);
-commentsModel.setComments(comments);
+import Api from './api/api';
+
+const AUTHORIZATION = `Basic NSoYZtfMpZzk6V8Hq`;
+const ENDPOINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+const api = new Api(ENDPOINT, AUTHORIZATION);
 
 const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
 const mainElement = bodyElement.querySelector(`.main`);
 const footerElement = bodyElement.querySelector(`.footer`);
+const profileComponent = new ProfileView();
 const menuComponent = new MenuView();
-const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel);
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
+const filterModel = new FilterModel();
+const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, api, profileComponent);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 
-render(headerElement, new ProfileView(), RenderPosition.BEFOREEND);
+
+render(headerElement, profileComponent, RenderPosition.BEFOREEND);
 render(mainElement, menuComponent, RenderPosition.AFTERBEGIN);
 
 const statisticComponent = new StatisticsView(filmsModel);
@@ -56,7 +54,15 @@ menuComponent.setOnChangeHandler((menuItem) => {
   }
 });
 
-render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 pagePresenter.init();
+
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(UpdateType.INIT, films);
+    render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
+  });
