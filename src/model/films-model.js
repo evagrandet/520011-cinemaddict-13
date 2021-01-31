@@ -24,12 +24,14 @@ export default class FilmsModel extends Observer {
   }
 
   updateFilm(updateType, update) {
+    console.log(update, this._films);
     const index = this._films
       .findIndex((film) => film.id === update.id);
 
     if (index === -1) {
       throw new Error(`Can't update nonexistent film`);
     }
+    console.log(index);
 
     this._films = [
       ...this._films.slice(0, index),
