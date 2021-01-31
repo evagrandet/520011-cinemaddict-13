@@ -37,3 +37,8 @@ export const getUserRank = (films) => {
     return RankTitle.NONE;
   }
 };
+
+
+export const isOnline = () => {
+  return window.navigator.onLine;
+};
