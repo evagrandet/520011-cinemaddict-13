@@ -14,10 +14,19 @@ import {render, RenderPosition} from './utils/render';
 import {MenuItem, UpdateType} from './const.js';
 
 import Api from './api/api';
+import Store from './api/store';
+import Provider from './api/provider';
 
 const AUTHORIZATION = `Basic NSoYZtfMpZzk6V8Hq`;
 const ENDPOINT = `https://13.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
 const api = new Api(ENDPOINT, AUTHORIZATION);
+
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
@@ -28,7 +37,7 @@ const menuComponent = new MenuView();
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
-const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, api, profileComponent);
+const pagePresenter = new PagePresenter(mainElement, filmsModel, commentsModel, filterModel, apiWithProvider, profileComponent);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel);
 
 
@@ -58,7 +67,7 @@ menuComponent.setOnChangeHandler((menuItem) => {
 filterPresenter.init();
 pagePresenter.init();
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
     render(footerElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
@@ -66,3 +75,18 @@ api.getFilms()
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`./service-worker.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  document.querySelector(`.logo`).textContent = `Cinemaddict`;
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+  document.querySelector(`.logo`).textContent = `Cinemaddict [offline]`;
+});

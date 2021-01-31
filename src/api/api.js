@@ -73,6 +73,16 @@ export default class Api {
     });
   }
 
+  sync(films) {
+    return this._sendRequest({
+      url: Url.SYNC,
+      method: Method.POST,
+      body: JSON.stringify(films),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+    .then(Api.toJSON);
+  }
+
   _sendRequest({
     url,
     method = Method.GET,
