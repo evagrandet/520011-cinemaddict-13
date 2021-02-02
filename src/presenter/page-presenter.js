@@ -43,7 +43,6 @@ export default class PagePresenter {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
 
@@ -99,7 +98,7 @@ export default class PagePresenter {
   }
 
   _renderFilm(film) {
-    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleViewAction, this._handleModeChange, this._commentsModel, this._api);
+    const filmPresenter = new FilmPresenter(this._filmsContainerComponent, this._handleViewAction, this._commentsModel, this._api);
     this._filmPresenter[film.id] = filmPresenter;
     filmPresenter.init(film);
   }
@@ -184,12 +183,6 @@ export default class PagePresenter {
     }
   }
 
-  _handleModeChange() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.setDefaultView());
-  }
-
   _handleLoadMoreButtonClick() {
     const filmsCount = this._getFilms().length;
     const minRenderedFilmsCount = Math.min(filmsCount, this._renderedFilmsCount + FILMS_COUNT_PER_STEP);
@@ -255,14 +248,6 @@ export default class PagePresenter {
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
-  }
-
-  _renderCommentedFilms() {
-
-  }
-
-  _renderRatedFilms() {
-
   }
 
   hide() {

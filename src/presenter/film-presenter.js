@@ -7,17 +7,10 @@ import FilmPopupCommentsView from '../view/film-popup-comments-view';
 import dayjs from 'dayjs';
 import {toast} from '../utils/toast';
 import {isOnline} from '../utils/common';
-
-const Mode = {
-  CLOSED: `CLOSED`,
-  OPEN: `OPEN`,
-};
-
 export default class FilmPresenter {
-  constructor(filmsListContainer, changeData, changeMode, commentsModel, api) {
+  constructor(filmsListContainer, changeData, commentsModel, api) {
     this._filmsListContainer = filmsListContainer;
     this._changeData = changeData;
-    this._changeMode = changeMode;
     this._commentsModel = commentsModel;
     this._api = api;
 
@@ -25,7 +18,6 @@ export default class FilmPresenter {
     this._filmPopupComponent = null;
     this._filmCommentsComponent = null;
     this._newCommentComponent = null;
-    this._mode = Mode.CLOSED;
     this._comments = [];
 
     this._handleOpenPopupClick = this._handleOpenPopupClick.bind(this);
@@ -63,12 +55,6 @@ export default class FilmPresenter {
 
   _handleModelEvent(updateType, data) {
     this._filmCommentsComponent.update(this._commentsModel.getComments(data.id));
-  }
-
-  setDefaultView() {
-    if (this._mode !== Mode.CLOSED) {
-      this._closeFilmPopup();
-    }
   }
 
   setViewState(state, data) {
@@ -111,45 +97,50 @@ export default class FilmPresenter {
   }
 
   _handleFavoriteClick() {
+    this._film = Object.assign(
+        {},
+        this._film,
+        {
+          isFavorite: !this._film.isFavorite
+        }
+    );
     this._changeData(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              isFavorite: !this._film.isFavorite
-            }
-        )
+        this._film
     );
   }
 
   _handleWatchedClick() {
+    this._film = Object.assign(
+        {},
+        this._film,
+        {
+          isWatched: !this._film.isWatched,
+          watchingDate: dayjs(),
+        }
+    );
+
     this._changeData(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              isWatched: !this._film.isWatched,
-              watchingDate: dayjs(),
-            }
-        )
+        this._film
     );
   }
 
   _handleWatchlistClick() {
+    this._film = Object.assign(
+        {},
+        this._film,
+        {
+          isWatchlist: !this._film.isWatchlist
+        }
+    );
+
     this._changeData(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
-        Object.assign(
-            {},
-            this._film,
-            {
-              isWatchlist: !this._film.isWatchlist
-            }
-        )
+        this._film
     );
   }
 
@@ -196,30 +187,20 @@ export default class FilmPresenter {
   }
 
   _openFilmPopup() {
-    const prevFilmPopupView = this._filmPopupComponent;
     this._filmPopupComponent = new FilmPopupView(this._film);
     this._comments = this._commentsModel.getComments(this._film.id);
     this._commentsModel.addObserver(this._handleModelEvent);
     const commentsContainer = this._filmPopupComponent.getElement().querySelector(`.film-details__bottom-container`);
-    this._mode = Mode.OPEN;
-
 
     document.body.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
+
     this._filmPopupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
-
     this._filmPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-
     this._filmPopupComponent.setWatchedClickHandler(this._handleWatchedClick);
-
     this._filmPopupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
 
-    if (prevFilmPopupView) {
-      replace(this._filmPopupComponent, prevFilmPopupView);
-      remove(prevFilmPopupView);
-    } else {
-      render(document.body, this._filmPopupComponent, RenderPosition.BEFOREEND);
-    }
+    render(document.body, this._filmPopupComponent, RenderPosition.BEFOREEND);
     this._renderCommentsComponent(commentsContainer);
     this._renderNewCommentComponent(commentsContainer);
   }
@@ -246,17 +227,17 @@ export default class FilmPresenter {
 
   _escKeyDownHandler(evt) {
     if (evt.key === KeyCode.ESC) {
-      this._changeMode();
+      this._closeFilmPopup();
     }
   }
 
   _closeFilmPopup() {
     remove(this._filmPopupComponent);
-    this._filmPopupComponent = null;
+
     this._commentsModel.removeObserver(this._handleModelEvent);
 
     document.body.classList.remove(`hide-overflow`);
-    this._mode = Mode.CLOSED;
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   destroy() {

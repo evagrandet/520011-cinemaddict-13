@@ -100,15 +100,14 @@ const createFilmPopupTemplate = (film) => {
 };
 
 export default class FilmPopupView extends AbstractSmartView {
-  constructor(film, comments) {
+  constructor(film) {
     super();
     this._film = film;
-    this._comments = comments;
     this.restoreHandlers();
   }
 
   getTemplate() {
-    return createFilmPopupTemplate(this._film, this._comments);
+    return createFilmPopupTemplate(this._film);
   }
 
   setClosePopupClickHandler(callback) {
