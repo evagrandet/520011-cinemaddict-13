@@ -1,7 +1,5 @@
 import AllFilmsView from '../view/all-films-view';
-import CommentedFilmsView from '../view/commented-films-view';
 import NoFilmsView from '../view/no-films-view';
-import RatedFilmsView from '../view/rated-films-view';
 import SortView from '../view/sort-view';
 import LoadMoreBtnView from '../view/load-more-btn-view';
 import FilmPresenter from './film-presenter';
@@ -36,8 +34,6 @@ export default class PagePresenter {
     this._commonFilmsComponent = new CommonFilmsView();
     this._allFilmsComponent = new AllFilmsView();
     this._filmsContainerComponent = new FilmsContainerView();
-    this._ratedFilmsComponent = new RatedFilmsView();
-    this._commentedFilmsComponent = new CommentedFilmsView();
     this._noFilmsComponent = new NoFilmsView();
     this._loadingComponent = new LoadingView();
 
